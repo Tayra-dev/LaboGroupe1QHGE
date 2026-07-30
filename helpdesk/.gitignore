@@ -1,0 +1,9 @@
+.idea/*
+.venv/*
+.env.*
+
+!.gitkeep
+init_db/*
+
+__pycache__
+*.pyc
