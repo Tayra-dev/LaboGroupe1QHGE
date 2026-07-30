@@ -31,8 +31,6 @@ class User(BaseEntity, db.Model):
     # d'association (sinon la base refuserait, à cause des clés étrangères).
     roles = db.relationship('UserRole', back_populates='user',
                             cascade='all, delete-orphan')
-    baskets = db.relationship('Basket', back_populates='user',
-                              cascade='all, delete-orphan')
 
     # --- logique métier -----------------------------------------------------
     # Un modèle n'est pas qu'un sac de colonnes: les règles qui ne concernent
@@ -60,14 +58,6 @@ class User(BaseEntity, db.Model):
 
     def is_admin(self) -> bool:
         return "ADMIN" in self.role_names()
-
-    def current_basket(self):
-        """Le panier en cours (non validé), ou None."""
-        for basket in self.baskets:
-            if not basket.closed:
-                return basket
-
-        return None
 
     def __repr__(self):
         return f"<User {self.username}>"

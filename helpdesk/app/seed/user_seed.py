@@ -2,7 +2,6 @@ from argon2 import PasswordHasher
 
 from app import app, db
 from app.framework.seed import Seedable
-from app.models.basket import Basket
 from app.models.role import Role
 from app.models.user import User
 
@@ -59,10 +58,6 @@ class UserSeed(Seedable):
                     continue
 
                 user.add_role(role)
-
-            # Tout utilisateur démarre avec un panier ouvert. Comme la relation
-            # User.baskets est en cascade, ce panier sera inséré avec le user.
-            user.baskets.append(Basket())
 
             app.logger.debug(f"Seed user {username}")
 

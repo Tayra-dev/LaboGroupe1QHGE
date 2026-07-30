@@ -8,7 +8,6 @@ from app.forms.user.user_register_form import UserRegisterForm
 from app.forms.user.user_update_form import UserUpdateForm
 from app.framework.decorators.injectable import injectable
 from app.mappers.user_mapper import UserMapper
-from app.models.basket import Basket
 from app.models.role import Role
 from app.models.user import User
 from app.services.base_service import BaseService
@@ -59,9 +58,6 @@ class UserService(BaseService):
         role_user = Role.query.filter_by(role_name="USER").first()
         if role_user is not None:
             user.add_role(role_user)
-
-        # ... et démarre avec un panier vide ouvert.
-        user.baskets.append(Basket())
 
         try:
             db.session.add(user)
