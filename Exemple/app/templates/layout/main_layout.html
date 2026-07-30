@@ -1,0 +1,124 @@
+{#
+    Layout principal: le squelette HTML commun à toutes les pages.
+
+    Les autres templates font `{% extends "layout/main_layout.html" %}` puis
+    remplissent `{% block body %}`. C'est de l'héritage de template: on écrit le
+    <head>, la navbar et les messages flash UNE fois.
+
+    Deux variables sont disponibles partout sans qu'aucun controller ne les
+    passe:
+    - current_user : fourni par le context_processor de app/__init__.py
+    - config, request, session : fournis par Flask lui-même
+
+    Ceci est un commentaire Jinja: il n'apparaît pas dans le HTML envoyé au
+    navigateur (contrairement à un <!-- commentaire HTML -->).
+#}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    {# `block` avec un contenu par défaut: une page peut le surcharger. #}
+    <title>{% block title %}Flask MVC{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container">
+            {# url_for('index') = l'URL de la vue nommée `index`.
+               Jamais href="/": si la route change, url_for suit. #}
+            <a class="navbar-brand" href="{{ url_for('index') }}">Flask MVC</a>
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('item_list') }}">Boutique</a>
+                </li>
+                {% if current_user and current_user.is_admin() %}
+                    {# Ces liens ne sont pas la sécurité: ils sont juste cachés.
+                       Le vrai contrôle est @auth_required(level="ADMIN") côté
+                       Python — un utilisateur peut toujours taper l'URL. #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('user_list') }}">Utilisateurs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('basket_list') }}">Paniers</a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                {% if current_user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('basket_details') }}">Panier</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('profile') }}">
+                            {{ current_user.username }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Déconnexion</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Connexion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">Inscription</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="root container">
+        {#
+            Les messages flash: flash("texte", "success") dans un controller les
+            dépose en session, get_flashed_messages() les consomme ici (une
+            seule fois). C'est LE moyen d'afficher un message après une
+            redirection, puisque la réponse rendue n'est pas celle du POST.
+
+            with_categories=true -> on récupère des tuples (catégorie, message),
+            et la catégorie sert de suffixe aux classes Bootstrap alert-*.
+        #}
+        {#
+            Bandeau permanent pour un compte dont l'adresse n'est pas confirmée.
+            Il n'empêche rien: c'est le controller qui refuse le checkout
+            (basket_controller.py). Le bandeau explique, le serveur décide.
+        #}
+        {% if current_user and not current_user.email_verified %}
+            <div class="alert alert-warning d-flex justify-content-between align-items-center">
+                <span>
+                    Votre adresse <strong>{{ current_user.email }}</strong> n'est
+                    pas encore confirmée: vous ne pourrez pas valider de commande.
+                </span>
+                <form method="post" action="{{ url_for('email_verify_resend') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-warning">
+                        Renvoyer le lien
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        {% block body %}{% endblock %}
+    </div>
+</body>
+</html>
