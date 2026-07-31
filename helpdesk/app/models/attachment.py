@@ -1,4 +1,3 @@
-```python
 from app import db
 from app.models.base_entity import BaseEntity
 
@@ -21,4 +20,4 @@ class Attachment(BaseEntity, db.Model):
 
     def __repr__(self):
         return f"<Attachment {self.attachment_id}: {self.attachment_filename}>"
-```
+
