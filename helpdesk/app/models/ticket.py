@@ -16,10 +16,10 @@ class Ticket(BaseEntity, db.Model):
 
     # Foreign Keys
     author_id = db.Column(
-        "userid", db.Integer, db.ForeignKey("users.userid"), nullable=False
+        "authorid", db.Integer, db.ForeignKey("users.userid"), nullable=False
     )
     technician_id = db.Column(
-        "userid", db.Integer, db.ForeignKey("users.userid"), nullable=True
+        "technicianid", db.Integer, db.ForeignKey("users.userid"), nullable=True
     )
     category_id = db.Column(
         "categoryid", db.Integer, db.ForeignKey("categories.categoryid"), nullable=False
