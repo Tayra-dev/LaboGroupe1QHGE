@@ -1,4 +1,5 @@
-from abstract_dto import AbstractDTO
+from app.dtos.abstract_dto import AbstractDTO
+from app.models.role import Role
 
 
 class RoleDTO(AbstractDTO):
@@ -7,8 +8,11 @@ class RoleDTO(AbstractDTO):
         self.name = None
 
     @staticmethod
-    def build_from_entity(entity):
-        pass
+    def build_from_entity(role: Role) -> "RoleDTO":
+        role_dto = RoleDTO()
+        role_dto.role_id = role.role_id
+        role_dto.name = role.name
+        return role_dto
 
     def get_json_parsable(self):
-        pass
+        return dict(self.__dict__)
