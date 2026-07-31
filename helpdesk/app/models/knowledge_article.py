@@ -7,15 +7,17 @@ class KnowledgeArticle(BaseEntity, db.Model):
 
     __tablename__ = "knowledgearticles"
 
-    article_id = db.Column("articleid", db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column("articletitle", db.String(100))
-    content = db.Column("articlecontent", db.Text)
+    article_id = db.Column(
+        "articleid", db.Integer, primary_key=True, autoincrement=True
+    )
+    title = db.Column("articletitle", db.String(100), nullable=False)
+    content = db.Column("articlecontent", db.Text, nullable=False)
 
     category_id = db.Column("categoryid", db.ForeignKey("categories.categoryid"))
     author_id = db.Column("authorid", db.ForeignKey("users.userid"))
 
-    category = db.relationship("Category", back_populates="knowledgearticles")
-    author = db.relationship("Author", back_populates="knowledgearticles")
+    category = db.relationship("Category", back_populates="knowledge_articles")
+    author = db.relationship("Author", back_populates="knowledge_articles")
 
     def __repr__(self):
         return f"<Article {self.article_id}: {self.title}>"

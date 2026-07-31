@@ -10,8 +10,8 @@ class Team(BaseEntity, db.Model):
     # --- Colonnes -----------------------------------------------------
 
     team_id = db.Column("teamid", db.Integer, primary_key=True)
-    name = db.Column("teamname", db.String, unique=True, index=True)
-    description = db.Column("teamdescription", db.String, nullable=True)
+    name = db.Column("teamname", db.String(50), unique=True, index=True)
+    description = db.Column("teamdescription", db.Text, nullable=True)
 
     # --- Relations -----------------------------------------------------
 

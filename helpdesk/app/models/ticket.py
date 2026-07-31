@@ -1,8 +1,8 @@
 from app import db
 from app.models.base_entity import BaseEntity
 
-class Ticket(BaseEntity, db.Model):
 
+class Ticket(BaseEntity, db.Model):
     __tablename__ = "tickets"
 
     # Base Columns
@@ -10,21 +10,42 @@ class Ticket(BaseEntity, db.Model):
     title = db.Column("title", db.String(255), nullable=False)
     description = db.Column("description", db.Text, nullable=False)
     status = db.Column("status", db.String(255), nullable=False)
-    due_date = db.Column("duedate", db.Date, nullable=False) # derived from priority.delay_hours (?)
-    
+    due_date = db.Column(
+        "duedate", db.Date, nullable=False
+    )  # derived from priority.delay_hours (?)
+
     # Foreign Keys
-    user_id = db.Column("userid", db.Integer, db.ForeignKey("users.userid"), nullable=False)
-    category_id = db.Column("categoryid", db.Integer, db.ForeignKey("categories.categoryid"), nullable=False)
-    priority_id = db.Column("priorityid", db.Integer, db.ForeignKey("priorities.priorityid"), nullable=False)
-    equipment_id = db.Column("equipmentid", db.Integer, db.ForeignKey("equipments.equipmentid"), nullable=False)
+    author_id = db.Column(
+        "userid", db.Integer, db.ForeignKey("users.userid"), nullable=False
+    )
+    technician_id = db.Column(
+        "userid", db.Integer, db.ForeignKey("users.userid"), nullable=True
+    )
+    category_id = db.Column(
+        "categoryid", db.Integer, db.ForeignKey("categories.categoryid"), nullable=False
+    )
+    priority_id = db.Column(
+        "priorityid", db.Integer, db.ForeignKey("priorities.priorityid"), nullable=False
+    )
+    equipment_id = db.Column(
+        "equipmentid",
+        db.Integer,
+        db.ForeignKey("equipments.equipmentid"),
+        nullable=False,
+    )
 
     # Relationships
-    user = db.relationship("User", back_populates="tickets")
-    category = db.relationship("Category", back_populates="tickets")
-    priority = db.relationship("Priority", back_populates="tickets")
-    equipment = db.relationship("Equipment", back_populates="tickets")
-    
+    author = db.relationship("User", back_populates="created_tickets")
+    technician = db.relationship("User", back_populates="assigned_tickets")
+    category = db.relationship("Category", back_populates="ticket")
+    priority = db.relationship("Priority", back_populates="ticket")
+    equipment = db.relationship("Equipment", back_populates="ticket")
+    attachments = db.relationship("Attachment", back_populates="ticket")
+    comments = db.relationship("Comment", back_populates="ticket")
+    satisfaction_surveys = db.relationship(
+        "SatisfactionSurvey", back_populates="ticket"
+    )
+    status_histories = db.relationship("TicketStatusHistory", back_populates="ticket")
 
     def __repr__(self):
         return f"<Ticket ['{self.title}' ID: {self.ticket_id}]>"
-

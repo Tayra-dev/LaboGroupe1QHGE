@@ -12,13 +12,13 @@ class User(BaseEntity, db.Model):
     # --- Colonnes ------------------------------------------------------------
 
     user_id = db.Column("userid", db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column("username", db.String, unique=True, nullable=False, index=True)
+    name = db.Column("username", db.String(50), unique=True, nullable=False, index=True)
     email = db.Column(
         "useremail", db.String(120), unique=True, nullable=False, index=True
     )
     password = db.Column("userpassword", db.String(255), nullable=False)
-    firstname = db.Column("userfirstname", db.String, nullable=False)
-    lastname = db.Column("userlastname", db.String, nullable=False)
+    firstname = db.Column("userfirstname", db.String(50), nullable=False)
+    lastname = db.Column("userlastname", db.String(50), nullable=False)
     team_id = db.Column("teamid", db.ForeignKey("teams.teamid"))
     site_id = db.Column("siteid", db.ForeignKey("sites.siteid"))
 
@@ -35,6 +35,17 @@ class User(BaseEntity, db.Model):
         "Ticket",
         foreign_keys="Ticket.technician_id",
         back_populates="technician",
+    )
+    comments = db.relationship("Comment", back_populates="author")
+    attachments = db.relationship("Attachment", back_populates="author")
+    knowledge_articles = db.relationship("KnowledgeArticle", back_populates="author")
+    equipments = db.relationship("Equipment", back_populates="user")
+    site = db.relationship("Site", back_populates="users")
+    satisfaction_surveys = db.relationship(
+        "SatisfactionSurvey", back_populates="client"
+    )
+    ticket_status_histories = db.relationship(
+        "TicketStatusHistory", back_populates="user"
     )
 
     # --- Logique métier ------------------------------------------------------

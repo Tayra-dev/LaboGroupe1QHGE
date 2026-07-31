@@ -1,8 +1,8 @@
 from app import db
 from app.models.base_entity import BaseEntity
 
-class Category(BaseEntity, db.Model):
 
+class Category(BaseEntity, db.Model):
     __tablename__ = "categories"
 
     # Base Columns
@@ -11,7 +11,8 @@ class Category(BaseEntity, db.Model):
     description = db.Column("categorydescription", db.String(255), nullable=False)
 
     # Relationships
-    tickets = db.relationship("Ticket", back_populates="category")
+    ticket = db.relationship("Ticket", back_populates="category")
+    knowledge_articles = db.relationship("KnowledgeArticle", back_populates="category")
 
     def __repr__(self):
         return f"<Category ['{self.name}' ID: {self.category_id}]>"
