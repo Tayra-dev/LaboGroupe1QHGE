@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, redirect
 
 from app import app
 from app.framework.decorators.inject import inject
@@ -9,5 +9,5 @@ from app.forms.users.user_register_form import UserRegisterForm
 def register():
     form = UserRegisterForm()
     if form.validate_on_submit():
-        print(form)
+        return redirect("/success")
     return render_template("users/register.html", form=form)
