@@ -14,10 +14,19 @@ Ce serveur est mono-processus et non optimisé: c'est un outil de
 développement. En production on passe par un serveur WSGI (gunicorn, uwsgi)
 avec DEBUG=False.
 """
+
 import os
+from livereload import Server
 
 from app import app
 
-port = int(os.environ.get('PORT', 8080))
+port = int(os.environ.get("PORT", "8080"))
 
-app.run('0.0.0.0', port=port)
+print(app.config)
+if app.config["DEBUG"] == False:
+    app.run("0.0.0.0", port=port)
+else:
+    server = Server(app.wsgi_app)
+    server.watch("app/templates/**/*")
+    server.watch("app/static/**/*")
+    server.serve(host="0.0.0.0", port=port)

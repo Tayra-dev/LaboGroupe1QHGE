@@ -1,0 +1,55 @@
+{% from "macros/_form_macros.html" import input_field with context %}
+
+{% extends "layout/main_layout.html" %}
+{% block content %}
+<section class="bg-white flex flex-col grow">
+	<h1 class="px-8 py-6 text-4xl">Inscription</h1>
+	<hr class="mx-8 text-gray-300">
+	<div class="flex items-center m-auto w-full">
+		<div class="mx-auto w-1/2 px-12 py-8 bg-gray-100 rounded-md shadow-xl h-fit">
+			<div>
+				<h2>Créer un compte</h2>
+			</div>
+			<form method="post" class="flex flex-col">
+				{{ form.hidden_tag() }}
+				<div class="flex gap-6 p-6">
+					{{ input_field(form.name.name, form.name.label) }}
+					{{ input_field(form.email.name, form.email.label) }}
+				</div>
+				<div class="flex gap-6 p-6">
+					{{ input_field(form.password.name, form.password.label) }}
+					{{ input_field(form.confirm.name, form.confirm.label) }}
+				</div>
+				<div class="flex gap-6 p-6">
+					{{ input_field(form.firstname.name, form.firstname.label) }}
+					{{ input_field(form.lastname.name, form.lastname.label) }}
+				</div>
+				<button
+					class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded inline-flex items-center w-fit mx-auto my-6">
+					<svg fill="#FFFFFF" viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg"
+						class="w-4 h-4 mr-2">
+						<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+						<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+						<g id="SVGRepo_iconCarrier">
+							<defs>
+								<style>
+									.cls-1 {
+										fill: none;
+									}
+								</style>
+							</defs>
+							<title>send--alt--filled</title>
+							<path
+								d="M27.71,4.29a1,1,0,0,0-1.05-.23l-22,8a1,1,0,0,0,0,1.87l8.59,3.43L19.59,11,21,12.41l-6.37,6.37,3.44,8.59A1,1,0,0,0,19,28h0a1,1,0,0,0,.92-.66l8-22A1,1,0,0,0,27.71,4.29Z">
+							</path>
+							<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1"
+								width="32" height="32"></rect>
+						</g>
+					</svg>
+					<span>Envoyer</span>
+				</button>
+			</form>
+		</div>
+	</div>
+</section>
+{% endblock %}

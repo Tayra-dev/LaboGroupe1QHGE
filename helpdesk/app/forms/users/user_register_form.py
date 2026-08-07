@@ -38,4 +38,4 @@ class UserRegisterForm(FlaskForm):
     firstname = StringField(
         "Prénom", validators=[DataRequired(), Length(min=2, max=50)]
     )
-    lastname = StringField("Prénom", validators=[DataRequired(), Length(min=2, max=50)])
+    lastname = StringField("Nom de famille", validators=[DataRequired(), Length(min=2, max=50)])
