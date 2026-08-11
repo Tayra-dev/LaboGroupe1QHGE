@@ -2,6 +2,22 @@
 
 {% extends "layout/main_layout.html" %}
 {% block content %}
+
+<!-- Load JS after page load  -->
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		document.querySelectorAll('.eye-icon').forEach((icon) => {
+			const field = icon.previousElementSibling;
+			const slash = icon.querySelector('.eye-slash');
+			icon.addEventListener('click', () => {
+				field.type = field.type === 'password' ? 'text' : 'password';
+				slash.classList.toggle('hidden');
+			});
+		});
+	});
+
+</script>
+
 <section class="bg-white flex flex-col grow">
 	<h1 class="px-8 py-6 text-4xl">Inscription</h1>
 	<div class="flex items-center mx-auto my-8 w-full">
