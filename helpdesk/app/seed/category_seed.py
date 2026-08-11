@@ -5,7 +5,7 @@ from app.models.category import Category
 
 class CategorySeed(Seedable):
 
-    order = 50
+    order = 10
 
     def seed(self):
         for name, description in CATEGORIES:

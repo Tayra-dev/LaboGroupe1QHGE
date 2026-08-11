@@ -5,7 +5,7 @@ from app.models.priority import Priority
 
 class PrioritySeed(Seedable):
 
-    order = 60
+    order = 10
 
     def seed(self):
         for name, level, delay_hours in PRIORITIES:
