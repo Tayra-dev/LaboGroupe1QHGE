@@ -67,18 +67,22 @@ class User(BaseEntity, db.Model):
                 return
 
     def get_roles(self) -> list[Role]:
+        """Retourne les rôles de l'utilisateur."""
         return [user_role.rel_role for user_role in self.roles]
 
     def is_admin(self) -> bool:
+        """Vérifie si l'utilisateur est un admin."""
         return "ADMIN" in self.role_names()
 
     def has_role(self, rolename: str) -> bool:
+        """Vérifie si l'utilisateur possède le rôle passé en paramètre."""
         return rolename in self.role_names()
 
-    # --- Utils ------------------------------------------------------------------
+    # --- Utils ---------------------------------------------------------------
 
     def role_names(self) -> list[str]:
+        """Retourne tous les noms de rôle d'un utilisateur"""
         return [user_role.rel_role.name for user_role in self.roles]
 
     def __repr__(self):
-        return f"<User {self.name}>"
+        return f"<User {self.user_id} {self.name} {self.email}>"
