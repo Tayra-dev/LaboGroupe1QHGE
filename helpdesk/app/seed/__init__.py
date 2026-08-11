@@ -13,3 +13,7 @@ from pathlib import Path
 # Avec pathlib
 path = Path(__file__).parent.absolute()
 __all__ = [f.name[:-3] for f in path.iterdir() if f.is_file() and f.name.endswith(".py")]
+
+SITES = [
+        ("Technobel", "Place de l'univeristé, 15", "Louvain-La-Neuve", ["user1", "user2"] , [])
+    ]
