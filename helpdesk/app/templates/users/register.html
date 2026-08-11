@@ -13,18 +13,19 @@
 			<form method="post" class="flex flex-col">
 				{{ form.hidden_tag() }}
 				<div class="flex gap-6 p-6">
-					{{ input_field(form.name.name, form.name.label, form.name.errors) }}
-					{{ input_field(form.email.name, form.email.label, form.email.errors,
+					{{ input_field(form.name, placeholder="utilisateur_42") }}
+					{{ input_field(form.email,
+					type="email",
 					placeholder="utilisateur@exemple.com") }}
 				</div>
 				<div class="flex gap-6 p-6">
-					{{ input_field(form.password.name, form.password.label, form.password.errors) }}
-					{{ input_field(form.confirm.name, form.confirm.label, form.confirm.errors) }}
+					{{ input_field(form.password, type="password") }}
+					{{ input_field(form.confirm, type="password") }}
 				</div>
 				<div class="flex gap-6 p-6">
-					{{ input_field(form.firstname.name, form.firstname.label, form.firstname.errors, placeholder="Jean")
+					{{ input_field(form.firstname, placeholder="Jean")
 					}}
-					{{ input_field(form.lastname.name, form.lastname.label, form.lastname.errors, placeholder="Dupont")
+					{{ input_field(form.lastname, placeholder="Dupont")
 					}}
 				</div>
 				<button type="submit"
