@@ -15,6 +15,6 @@ class UserMapper(AbstractMapper):
             user.name = form.name.data
             user.email = form.email.data
             user.password = form.password.data
-            user.firstname = form.firstname
-            user.lastname = form.lastname
+            user.firstname = form.firstname.data
+            user.lastname = form.lastname.data
         return user

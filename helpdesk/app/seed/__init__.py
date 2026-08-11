@@ -12,4 +12,31 @@ from pathlib import Path
 
 # Avec pathlib
 path = Path(__file__).parent.absolute()
-__all__ = [f.name[:-3] for f in path.iterdir() if f.is_file() and f.name.endswith(".py")]
+__all__ = [
+    f.name[:-3] for f in path.iterdir() if f.is_file() and f.name.endswith(".py")
+]
+
+ROLES = ["USER", "ADMIN", "TECHNICIAN"]
+USERS = [
+    (
+        "admin",
+        "admin@example.com",
+        "Technobel2026",
+        "admin",
+        "admin",
+        None,
+        None,
+        ["USER", "ADMIN"],
+    ),
+    ("test", "test@example.com", "Technobel2026", "test", "test", None, None, ["USER"]),
+    (
+        "technician",
+        "technician@example.com",
+        "Technobel2026",
+        "technician",
+        "technician",
+        None,
+        None,
+        ["TECHNICIAN"],
+    ),
+]
