@@ -13,11 +13,15 @@ class CategoryDTO(AbstractDTO):
 
     @staticmethod
     def build_from_entity(category: Category) -> "CategoryDTO":
+
         category_dto = CategoryDTO()
 
         category_dto.category_id = category.category_id
         category_dto.category_name = category.name
         category_dto.category_description = category.description
+
+        from app.dtos.ticket_dto import TicketDTO
+        from app.dtos.knowledge_article_dto import KnowledgeArticleDTO
 
         category_dto.tickets_list = [TicketDTO.build_from_entity(ticket)
                                      for ticket in category.ticket]
