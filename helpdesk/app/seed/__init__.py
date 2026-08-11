@@ -89,5 +89,5 @@ PRIORITIES = [
 ]
 
 SITES = [
-        ("Technobel", "Place de l'univeristé, 15", "Louvain-La-Neuve", ["user1", "user2"] , [])
+        ("Technobel", "Place de l'univeristé, 15", "Louvain-La-Neuve", ["admin", "test"] , [])
     ]
