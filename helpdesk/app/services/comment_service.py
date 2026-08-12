@@ -7,7 +7,7 @@ from app.mappers.comment_mapper import CommentMapper
 class CommentService(AbstractService):
 
     def find_all(self):
-        """Tous les commentaires (sous forme de DTO)."""
+        """Tous les commentaires."""
         try:
             comments = Comment.query.all()
 
@@ -19,7 +19,7 @@ class CommentService(AbstractService):
             # db.session.rollback() pas nécessaire car juste un appel à la db
 
     def find_one(self, entity_id: int):
-        """Un commentaire par sa clé primaire, ou None."""
+        """Un commentaire par son id."""
         try:
             comment = db.session.get(Comment, entity_id)
 
@@ -34,7 +34,7 @@ class CommentService(AbstractService):
             # db.session.rollback() pas nécessaire car juste un appel à la db
 
     def find_one_by(self, **kwargs):
-        """Un commentaire par n'importe quelle colonne: find_one_by(username='x')."""
+        """Un commentaire selon un critère."""
         try:
             comment = Comment.query.filter_by(**kwargs).one_or_none()
 
@@ -48,6 +48,19 @@ class CommentService(AbstractService):
             return None
             # db.session.rollback() pas nécessaire car juste un appel à la db
 
+    def find_all_by(self, **kwargs):
+           """plusieurs commentaires selon un critère"""
+           try:
+               comments = Comment.query.filter_by(**kwargs).all()
+
+               if comments is None:
+                   return None
+
+               return [CommentMapper.entity_to_dto(comment) for comment in comments]
+               
+           except Exception as e:
+               app.logger.error(f"Error | find_all_by comment: {e}")
+               return None
 
     def insert(self, data):
         """Crée un commentaire à partir d'un formulaire validé."""
