@@ -10,20 +10,22 @@ from app.forms.comment_form import CommentForm
 # + Ajouter un décorateur qui vérifie que l'auteur du commentaire est loggé
 def comment_create(
     ticket_id: int,
-    comment_service: CommentService,
-    auth_service: AuthService 
+    # comment_service: CommentService,
+    # auth_service: AuthService 
 ):
     """Création d'un commentaire sur un ticket"""
-
+    comment_service = CommentService()
+    
     form = CommentForm()
 
     if form.validate_on_submit():
 
-        current_user = auth_service.get_current_user() #controller le nom de la fonction dans auth_service
-
+        # current_user = auth_service.get_current_user() #controller le nom de la fonction dans auth_service
+        fake_user_id = 1
+        
         data = {
             "form": form,
-            "author_id": current_user.user_id,
+            "author_id": fake_user_id, #current_user.user_id,
             "ticket_id": ticket_id
         }
 
