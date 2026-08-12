@@ -1,7 +1,7 @@
 from app.mappers.abstract_mapper import AbstractMapper
-from dtos.comment_dto import CommentDTO
-from models.comment import Comment
-from forms.comment_form import CommentForm
+from app.dtos.comment_dto import CommentDTO
+from app.models.comment import Comment
+from app.forms.comment_form import CommentForm
 
 class CommentMapper(AbstractMapper):
     @staticmethod
