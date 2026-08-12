@@ -1,8 +1,9 @@
 from app import app
 from flask import flash, redirect, url_for, render_template
 
-from app.services.comment_service.py import CommentService
-from app.services.auth_service.py import AuthService
+# from app.framework.decorators.auth_required import auth_required
+from app.services.comment_service import CommentService
+from app.services.auth_service import AuthService
 from app.forms.comment_form import CommentForm
 
 @app.route('/tickets/<ticket_id>/comments', methods=['GET', 'POST'])
@@ -22,7 +23,7 @@ def comment_create(
 
         data = {
             "form": form,
-            "author_id": current_user,
+            "author_id": current_user.user_id,
             "ticket_id": ticket_id
         }
 
