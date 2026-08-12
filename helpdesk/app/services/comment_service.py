@@ -1,4 +1,5 @@
-from app import db, app
+from app import db
+from app import app
 from app.services.base_service import BaseService
 from app.models.comment import Comment
 from app.mappers.comment_mapper import CommentMapper
@@ -77,5 +78,44 @@ class CommentService(BaseService):
     def update(self, entity_id: int, data):
         """Met à jour un commentaire existant."""
 
+        try:
+            comment = db.session.get(Comment, entity_id)
+
+            if comment is None:
+                return None
+
+            form = data['form']
+            author_id = data['author_id']
+            ticket_id = data['ticket_id']
+
+            comment = CommentMapper.form_to_entity(form, comment, author_id, ticket_id)
+
+            db.session.commit()
+
+            return CommentMapper.entity_to_dto(comment)
+
+
+        except Exception as e:
+            app.logger.error(f"Error | update comment: {e}")
+            db.session.rollback()
+            return None
+
     def delete(self, entity_id: int):
         """Supprime un commentaire."""
+
+        try:
+            comment = db.session.get(Comment, entity_id)
+
+            if comment is None:
+                return None
+
+            db.session.delete(comment)
+            db.session.commit()
+
+            app.logger.debug(f"Le commentaire {entity_id} a bien été supprimé")
+            return True
+        
+        except Exception as e:
+            app.logger.error(f"Error | delete comment: {e}")
+            db.session.rollback()
+            return None
