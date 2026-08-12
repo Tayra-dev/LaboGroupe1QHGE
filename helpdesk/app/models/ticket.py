@@ -35,8 +35,8 @@ class Ticket(BaseEntity, db.Model):
     )
 
     # Relationships
-    author = db.relationship("User", back_populates="created_tickets")
-    technician = db.relationship("User", back_populates="assigned_tickets")
+    author = db.relationship("User", foreign_keys=[author_id], back_populates="created_tickets")
+    technician = db.relationship("User", foreign_keys=[technician_id], back_populates="assigned_tickets")
     category = db.relationship("Category", back_populates="ticket")
     priority = db.relationship("Priority", back_populates="ticket")
     equipment = db.relationship("Equipment", back_populates="ticket")
