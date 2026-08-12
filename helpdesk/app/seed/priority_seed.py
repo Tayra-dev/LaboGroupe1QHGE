@@ -1,10 +1,10 @@
-from app import PRIORITIES, app, db
+from app import app, db
 from app.framework.seed import Seedable
 from app.models.priority import Priority
+from app.seed import PRIORITIES
 
 
 class PrioritySeed(Seedable):
-
     order = 10
 
     def seed(self):

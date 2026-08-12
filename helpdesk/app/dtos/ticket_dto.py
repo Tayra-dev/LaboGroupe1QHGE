@@ -1,4 +1,4 @@
-from app.dtos.abstract_dto import AbstractDTO
+from app.framework.dto import AbstractDTO
 from app.dtos.category_dto import CategoryDTO
 from app.dtos.priority_dto import PriorityDTO
 from app.models.ticket import Ticket

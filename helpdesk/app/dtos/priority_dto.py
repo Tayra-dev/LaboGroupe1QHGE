@@ -1,5 +1,5 @@
 from app.models.priority import Priority
-from app.dtos.abstract_dto import AbstractDTO
+from app.framework.dto import AbstractDTO
 
 
 class PriorityDTO(AbstractDTO):

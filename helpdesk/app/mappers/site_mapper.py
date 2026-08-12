@@ -1,4 +1,4 @@
-from app.mappers.abstract_mapper import AbstractMapper
+from app.framework.mapper import AbstractMapper
 from app.models.site import Site
 from app.dtos.sites_dto import SiteDTO
 

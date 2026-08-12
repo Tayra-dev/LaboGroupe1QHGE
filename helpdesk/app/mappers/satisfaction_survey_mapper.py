@@ -1,4 +1,4 @@
-from app.mappers.abstract_mapper import AbstractMapper
+from app.framework.mapper import AbstractMapper
 from app.models.satisfaction_survey import SatisfactionSurvey
 from app.dtos.satisfaction_survey_dto import SatisfactionSurveyDTO
 

@@ -1,4 +1,4 @@
-from app.dtos.abstract_dto import AbstractDTO
+from app.framework.dto import AbstractDTO
 from app.dtos.user_dto import UserDTO
 from app.dtos.category_dto import CategoryDTO
 from app.models.knowledge_article import KnowledgeArticle

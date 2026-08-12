@@ -1,4 +1,4 @@
-from app.mappers.abstract_mapper import AbstractMapper
+from app.framework.mapper import AbstractMapper
 from app.models.equipment import Equipment
 from app.dtos.equipment_dto import EquipmentDTO
 

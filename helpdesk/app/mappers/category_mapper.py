@@ -1,5 +1,5 @@
 from app.dtos.category_dto import CategoryDTO
-from app.mappers.abstract_mapper import AbstractMapper
+from app.framework.mapper import AbstractMapper
 from app.models.category import Category
 
 class CategoryMapper(AbstractMapper):

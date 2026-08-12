@@ -1,10 +1,10 @@
-from app import CATEGORIES, app, db
+from app import app, db
 from app.framework.seed import Seedable
 from app.models.category import Category
+from app.seed import CATEGORIES
 
 
 class CategorySeed(Seedable):
-
     order = 10
 
     def seed(self):

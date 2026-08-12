@@ -1,4 +1,4 @@
-from app.mappers.abstract_mapper import AbstractMapper
+from app.framework.mapper import AbstractMapper
 from app.dtos.ticket_dto import TicketDTO
 from app.models.ticket import Ticket
 

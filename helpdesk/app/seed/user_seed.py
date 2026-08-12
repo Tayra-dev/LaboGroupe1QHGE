@@ -6,9 +6,11 @@ from app.models.user import User
 from app.models.role import Role
 from app.seed import USERS
 
+hasher = PasswordHasher()
+
 
 class UserSeed(Seedable):
-    order: 20
+    order = 20
 
     def seed(self):
         for (
@@ -17,6 +19,8 @@ class UserSeed(Seedable):
             password,
             firstname,
             lastname,
+            _,
+            _,
             roles,
         ) in USERS:
             if User.query.filter_by(name=name).first() is not None:
@@ -26,7 +30,7 @@ class UserSeed(Seedable):
             user = User(
                 name=name,
                 email=email,
-                password=PasswordHasher.hash(password),
+                password=hasher.hash(password),
                 firstname=firstname,
                 lastname=lastname,
             )
