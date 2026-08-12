@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # Package des services: toute la logique métier et les accès à la base.
-# Voir app/services/base_service.py.
+# Voir app/framework/service/abstract_service.py.
 #
 # Auto-découverte, comme pour les modèles et les controllers: `from app.services
 # import *` (dans app/__init__.py) importe tous les modules du dossier.
