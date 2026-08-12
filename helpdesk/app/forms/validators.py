@@ -23,7 +23,6 @@ PASSWORD_VALIDATORS = (
             25,
             message=LENGTH_MSG,
         ),
-        EqualTo("confirm", message="Les mots de passe encodés ne correspondent pas"),
     ]
     if app.debug
     else [
@@ -38,4 +37,8 @@ PASSWORD_VALIDATORS = (
             message="Le mot de passe doit contenir au moins une lettre minuscule, une majuscule, un chiffre et un caractère spécial : !?(){}*$&@+=",
         ),
     ]
+)
+
+PASSWORD_CONFIRM_VALIDATOR = EqualTo(
+    "confirm", message="Les mots de passe encodés ne correspondent pas"
 )

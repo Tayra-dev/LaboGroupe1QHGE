@@ -10,6 +10,7 @@ from app.forms.users.user_register_form import UserRegisterForm
 from app.models.role import Role
 from app.models.user import User
 from app.mappers.user_mapper import UserMapper
+from app.forms.users.user_login_form import UserLoginForm
 
 
 @injectable(scope=Scope.SCOPED)
@@ -61,6 +62,17 @@ class UserService(AbstractService):
             )
             return None
 
+    def find_one_entity_by(self, **kwargs) -> User | None:
+        try:
+            user = User.query.filter_by(**kwargs).first()
+            return user if user is not None else None
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            app.logger.error(
+                f"Erreur lors de la récupération de l'utilisateur avec {[f'{k} = {v}' for k, v in kwargs.items()]} : {e}"
+            )
+            return None
+
     def insert(self, form: UserRegisterForm) -> UserDTO | None:
         try:
             user = User()
@@ -109,3 +121,22 @@ class UserService(AbstractService):
             return None
         else:
             return entity_id
+
+    def login(self, form: UserLoginForm) -> UserDTO | None:
+        try:
+            user = self.find_one_entity_by(name=form.name.data)
+            if user is None:
+                self.__hasher.hash(form.password.data)
+                return None
+            self.__hasher.verify(user.password, form.password.data)
+            if self.__hasher.check_needs_rehash(user.password):
+                user.password = self.__hasher.hash(form.password.data)
+                db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            app.logger.error(
+                f"Erreur lors de la vérification du login de {form.name}: {e}"
+            )
+            return None
+        else:
+            return UserMapper.entity_to_dto(user)
