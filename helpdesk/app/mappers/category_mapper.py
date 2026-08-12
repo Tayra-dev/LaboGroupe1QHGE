@@ -1,4 +1,5 @@
 from app.dtos.category_dto import CategoryDTO
+from app.forms.categories.category_form import CategoryForm
 from app.framework.mapper import AbstractMapper
 from app.models.category import Category
 
