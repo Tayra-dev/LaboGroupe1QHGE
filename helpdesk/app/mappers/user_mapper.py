@@ -1,6 +1,6 @@
 from app.dtos.user_dto import UserDTO
 from app.forms.users.user_register_form import UserRegisterForm
-from app.mappers.abstract_mapper import AbstractMapper
+from app.framework.mapper import AbstractMapper
 from app.models.user import User
 
 

@@ -1,4 +1,4 @@
-from app.dtos.abstract_dto import AbstractDTO
+from app.framework.dto import AbstractDTO
 from app.dtos.ticket_dto import TicketDTO
 from app.dtos.user_dto import UserDTO
 from app.models.satisfaction_survey import SatisfactionSurvey

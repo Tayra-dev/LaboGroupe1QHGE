@@ -1,4 +1,4 @@
-from app.dtos.abstract_dto import AbstractDTO
+from app.framework.dto import AbstractDTO
 from app.models.role import Role
 
 

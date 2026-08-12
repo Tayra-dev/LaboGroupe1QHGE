@@ -1,4 +1,4 @@
-from app.dtos.abstract_dto import AbstractDTO
+from app.framework.dto import AbstractDTO
 from app.dtos.user_dto import UserDTO
 from app.dtos.site_dto import SiteDTO
 from models.equipment import Equipment

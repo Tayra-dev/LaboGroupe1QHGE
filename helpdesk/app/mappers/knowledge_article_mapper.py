@@ -1,4 +1,4 @@
-from app.mappers.abstract_mapper import AbstractMapper
+from app.framework.mapper import AbstractMapper
 from app.models.knowledge_article import KnowledgeArticle
 from app.dtos.knowledge_article_dto import KnowledgeArticleDTO
 

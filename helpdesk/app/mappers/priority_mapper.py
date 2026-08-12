@@ -1,5 +1,5 @@
 from app.dtos.priority_dto import PriorityDTO
-from app.mappers.abstract_mapper import AbstractMapper
+from app.framework.mapper import AbstractMapper
 from app.models.priority import Priority
 
 class PriorityMapper(AbstractMapper):
