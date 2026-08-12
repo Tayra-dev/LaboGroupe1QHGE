@@ -1,10 +1,10 @@
 from app import db
 from app import app
-from app.services.base_service import BaseService
+from app.framework.service.abstract_service import AbstractService
 from app.models.comment import Comment
 from app.mappers.comment_mapper import CommentMapper
 
-class CommentService(BaseService):
+class CommentService(AbstractService):
 
     def find_all(self):
         """Tous les commentaires (sous forme de DTO)."""
