@@ -13,7 +13,7 @@ from app.framework.decorators.inject import inject
 def comment_create(
     ticket_id: int,
     comment_service: CommentService,
-    # auth_service: AuthService 
+    # auth_service: AbstractAuthService
 ):
     """Création d'un commentaire sur un ticket"""
     
@@ -44,4 +44,25 @@ def comment_create(
         "comments/create.html",
         form=form,
         ticket_id=ticket_id
+    )
+
+@app.route('tickets/<ticket_id>/comments', methods=['GET'])
+@inject
+def comment_list(
+    ticket_id: int,
+    comment_service: CommentService,
+    # auth_service: AbstractAuthService
+):
+    """Lister tous les commentaires d'un ticket"""
+
+    comments = comment_service.find_all_by(ticket_id=ticket_id)
+
+    if comments is None:
+        app.logger.error(f"Error | comment list impossible")
+        # return redirect(url_for('ticket_list'))
+
+    return render_template(
+        'comments/list.html',
+        ticket_id=ticket_id,
+        comments=comments
     )
