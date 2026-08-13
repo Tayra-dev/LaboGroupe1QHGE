@@ -11,6 +11,8 @@ from app.framework.service.abstract_auth_service import AbstractAuthService
 @app.route("/register", methods=["GET", "POST"])
 @inject
 def register(user_service: UserService, auth_service: AbstractAuthService):
+    if auth_service.is_authenticated():
+        return redirect("/dashboard")
     form = UserRegisterForm()
     if form.validate_on_submit():
         user = user_service.insert(form)
@@ -23,6 +25,8 @@ def register(user_service: UserService, auth_service: AbstractAuthService):
 @app.route("/login", methods=["GET", "POST"])
 @inject
 def login(user_service: UserService, auth_service: AbstractAuthService):
+    if auth_service.is_authenticated():
+        return redirect("/dashboard")
     form = UserLoginForm()
     error = None
     if form.validate_on_submit():
@@ -40,5 +44,5 @@ def login(user_service: UserService, auth_service: AbstractAuthService):
 def goToDashboard(auth_service: AbstractAuthService):
     current_user = auth_service.get_current_user()
     if current_user is None:
-        return redirect("/login")
+        return redirect("/")
     return render_template("dashboard/dashboard.html", user=current_user)

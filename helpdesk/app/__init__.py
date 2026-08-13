@@ -100,3 +100,14 @@ from app.seed import *
 from app.framework.seed import Seed
 
 seed = Seed(app)
+
+
+# Injecte le current_user dans tous les templates via le context_processor pour bénéficier de l'information partout dans l'app
+from app.framework.decorators.inject import inject
+from app.services.auth_service import AbstractAuthService
+
+
+@app.context_processor
+@inject
+def inject_current_user(auth_service: AbstractAuthService):
+    return {"current_user": auth_service.get_current_user()}
