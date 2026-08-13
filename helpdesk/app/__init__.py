@@ -3,6 +3,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from flask import Flask
+from flask import g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -18,7 +19,33 @@ app.debug = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 
 # La clé qui signe les cookies de session et les tokens CSRF.
 # En production elle doit venir de l'environnement et être aléatoire.
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "TestAsdf1234=")
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "TestAsdf1234=")
+
+# Les variables JWT pour encoder/decoder le token et assurer sa durée de vie
+app.config["JWT_SECRET_KEY"] = os.environ.get(
+    "JWT_SECRET_KEY", "5DsIqZTqtvZWgdsadmrd9OIygi2ia8EQV4JlMLL93aJ"
+)
+app.config["JWT_EXPIRES_IN"] = int(os.environ.get("JWT_EXPIRES_IN", "3600"))
+app.config["JWT_COOKIE_NAME"] = "helpdesk_JWT"
+
+
+# Ajoute un hook à l'envoi d'une réponse pour lui ajouter le cookie si nécessaire (login/logout)
+@app.after_request
+def set_cookie_with_JWT(response):
+    if "request_type" in g:
+        if g.request_type == "login" and "jwt" in g:
+            response.set_cookie(
+                app.config["JWT_COOKIE_NAME"],
+                g.jwt,
+                max_age=app.config["JWT_EXPIRES_IN"],
+                httponly=True,
+                secure=False,
+                samesite="Lax",
+            )
+        elif g.request_type == "logout":
+            response.delete_cookie(app.config["JWT_COOKIE_NAME"])
+    return response
+
 
 # Protection CSRF globale.
 # FlaskForm valide déjà son jeton, mais CSRFProtect étend le contrôle à TOUTES
@@ -32,13 +59,13 @@ csrf = CSRFProtect(app)
 # Debug TOOLBAR
 # INTERCEPT_REDIRECTS=False: sinon chaque redirection (et on en fait beaucoup
 # en MVC, avec le motif POST -> redirect) affiche une page intermédiaire.
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
 toolbar = DebugToolbarExtension(app)
 
 # SqlAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 # TRACK_MODIFICATIONS: système d'événements coûteux dont on ne se sert pas.
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
