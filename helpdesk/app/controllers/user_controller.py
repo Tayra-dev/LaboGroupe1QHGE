@@ -39,10 +39,16 @@ def login(user_service: UserService, auth_service: AbstractAuthService):
     return render_template("users/login.html", form=form, error=error)
 
 
+@app.route("/logout", methods=["GET"])
+@inject
+def logout(auth_service: AbstractAuthService):
+    auth_service.logout()
+    return redirect("/")
+
+
 @app.route("/dashboard", methods=["GET", "POST"])
 @inject
 def goToDashboard(auth_service: AbstractAuthService):
-    current_user = auth_service.get_current_user()
-    if current_user is None:
+    if not auth_service.is_authenticated():
         return redirect("/")
-    return render_template("dashboard/dashboard.html", user=current_user)
+    return render_template("dashboard/dashboard.html")
