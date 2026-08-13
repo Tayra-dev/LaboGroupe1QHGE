@@ -46,7 +46,7 @@ def comment_create(
         ticket_id=ticket_id
     )
 
-@app.route('tickets/<ticket_id>/comments', methods=['GET'])
+@app.route('/tickets/<ticket_id>/comments', methods=['GET'])
 @inject
 def comment_list(
     ticket_id: int,
