@@ -20,6 +20,20 @@ class CommentService(AbstractService):
             return None
             # db.session.rollback() pas nécessaire car juste un appel à la db
 
+    def find_one_entity(self, entity_id):
+        """Un commentaire sous forme d'entité"""
+        try:
+            comment = db.session.get(Comment, entity_id)
+
+            if comment is None:
+                return None
+
+            return comment
+        
+        except Exception as e:
+            app.logger.error(f"Error | find_one_entity comment: {e}")
+            return None
+    
     def find_one(self, entity_id: int):
         """Un commentaire par son Id."""
         try:
