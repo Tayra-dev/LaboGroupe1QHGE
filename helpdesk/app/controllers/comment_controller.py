@@ -38,7 +38,7 @@ def comment_create(
         
         else:
             flash("Commentaire ajouté avec succès.")
-            return redirect(url_for("comment_list", ticket_id=ticket_id))
+            # return redirect(url_for("ticket_detail", ticket_id=ticket_id))
 
     return render_template(
         "comments/create.html",
@@ -66,3 +66,86 @@ def comment_list(
         ticket_id=ticket_id,
         comments=comments
     )
+
+
+@app.route('/tickets/<ticket_id>/comments/<comment_id>/edit', methods=['GET', 'POST'])
+@inject
+def comment_edit(
+    ticket_id: int,
+    comment_id: int,
+    comment_service: CommentService,
+):
+    """Modifier le commentaire d'un ticket"""
+
+    comment = comment_service.find_one(comment_id)
+
+    if comment is None:
+        app.logger.error(f"Error | comment find one impossible")
+        flash("Impossible de trouver le commentaire.")
+        return redirect(url_for(
+            "comment_list",
+            ticket_id=ticket_id
+        ))
+    
+    form = CommentForm(obj=comment)
+
+    if form.validate_on_submit():
+
+        data = {
+            'form': form,
+            'author_id': comment.author_id,
+            'ticket_id': ticket_id
+        }
+
+        update_comment = comment_service.update(comment_id, data)
+
+        if update_comment is None:
+            app.logger.error(f"Error | comment update impossible: {comment_id}")
+            flash("Impossible de mettre à jour le commentaire.")
+        else:
+            flash("Commentaire mis à jour avec succès.")
+            return redirect(url_for(
+                "comment_list",
+                ticket_id=ticket_id
+            ))
+            
+    return render_template(
+        'comments/edit.html',
+        form=form,
+        ticket_id=ticket_id,
+        comment=comment
+    )
+ 
+
+@app.route('/tickets/<ticket_id>/comments/<comment_id>/delete', methods=['POST'])
+@inject
+def comment_delete(
+    ticket_id: int,
+    comment_id: int,
+    comment_service: CommentService
+):
+    """Supprimer le commentaire d'un ticket"""
+
+    comment = comment_service.find_one(comment_id)
+
+    if comment is None:
+        app.logger.error(f"Error | comment find one impossible")
+        flash("Impossible de trouver le commentaire")
+        return redirect(url_for(
+            "comment_list",
+            ticket_id=ticket_id
+        ))
+
+    deleted = comment_service.delete(comment_id)
+
+    if deleted is None:
+        app.logger.error(f"Error | comment delete impossible : {comment_id}")
+        flash("Impossible de supprimer le commentaire")
+        return redirect(url_for(
+            "comment_list",
+            ticket_id=ticket_id
+        ))
+
+    flash("Commentaire supprimé avec succès.")
+
+    return redirect(url_for("ticket_detail", ticket_id=ticket_id))
