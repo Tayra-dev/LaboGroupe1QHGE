@@ -11,7 +11,7 @@
 		</a>
 
 		<div id="collapseMenu" tabindex="-1"
-			class="hidden lg:block max-lg:bg-white dark:max-lg:bg-neutral-900 max-lg:border-l max-lg:border-slate-300 dark:max-lg:border-neutral-700 max-lg:w-1/2 max-lg:fixed max-lg:top-0 max-lg:right-0 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto max-sm:w-full z-50 outline-none">
+			class="z-90 hidden lg:block max-lg:bg-white dark:max-lg:bg-neutral-900 max-lg:border-l max-lg:border-slate-300 dark:max-lg:border-neutral-700 max-lg:w-1/2 max-lg:fixed max-lg:top-0 max-lg:right-0 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto max-sm:w-full z-50 outline-none">
 
 			<div
 				class="py-2 px-4 flex justify-between items-center border-b border-slate-300 sticky top-0 bg-white dark:border-neutral-700 dark:bg-neutral-900 lg:hidden max-lg:min-h-[68px]">
@@ -21,7 +21,7 @@
 				</a>
 				<button type="button" aria-controls="collapseMenu" id="toggleClose"
 					class="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
-					<span class="sr-only">Close main menu</span>
+					<span class="sr-only">Fermer le menu</span>
 					<svg xmlns="http://www.w3.org/2000/svg" class="size-4 fill-slate-900 dark:fill-slate-50"
 						aria-hidden="true" viewBox="0 0 329.269 329">
 						<path
@@ -42,10 +42,12 @@
 		</div>
 		<div class="flex items-center gap-4 ml-auto">
 			{% if not current_user %}
-			<a href="/login"
-				class="text-slate-900 text-sm font-semibold hover:text-blue-700 dark:text-slate-50 dark:hover:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">Connexion</a>
-			<a href="/register"
-				class="py-2 px-3.5 text-sm rounded-md font-semibold cursor-pointer tracking-wide text-white border border-blue-600 bg-indigo-600 hover:bg-indigo-800 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">Inscription</a>
+			<div class="hidden lg:flex items-center gap-2">
+				<a href="/login"
+					class="text-slate-900 text-sm font-semibold hover:text-blue-700 dark:text-slate-50 dark:hover:text-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">Connexion</a>
+				<a href="/register"
+					class="py-2 px-3.5 text-sm rounded-md font-semibold cursor-pointer tracking-wide text-white border border-blue-600 bg-indigo-600 hover:bg-indigo-800 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">Inscription</a>
+			</div>
 
 			<button type="button" aria-controls="collapseMenu" aria-expanded="false" aria-haspopup="true"
 				id="toggleOpen"
@@ -59,16 +61,33 @@
 				</svg>
 			</button>
 			{% else %}
-
-			<div class="flex gap-2 items-center p-3 bg-indigo-100 rounded-sm border border-indigo-200 hover:cursor-pointer">
-				<div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center text-center">
-					<span class="w-full">{{current_user.firstname[0]}}{{current_user.lastname[0]}}</span>
+			<div class="relative">
+				<div id="user-avatar"
+					class="flex gap-2 items-center p-3 bg-indigo-100 rounded-lg border border-indigo-200 hover:cursor-pointer shadow-xs">
+					<div
+						class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center text-center">
+						<span class="w-full">{{current_user.firstname[0]}}{{current_user.lastname[0]}}</span>
+					</div>
+					<div class="flex flex-col">
+						<span class="text-sm font-bold text-indigo-900">{{current_user.firstname}}
+							{{current_user.lastname}}</span>
+						<span class="text-xs text-indigo-900">{{current_user.email}}</span>
+					</div>
 				</div>
-				<div class="flex flex-col">
-
-					<span class="text-sm font-bold text-indigo-900">{{current_user.firstname}}
-						{{current_user.lastname}}</span>
-					<span class="text-xs text-indigo-900">{{current_user.email}}</span>
+				<div id="avatar-dropdown" class="hidden absolute mt-2 p-4 bg-white w-full border border-gray-100 shadow-xl rounded-lg text-center">
+					<button id="logout-btn"
+						class="text-sm font-medium px-4 py-2 bg-red-100 rounded-md border-red-300 text-red-500 w-full hover:cursor-pointer flex items-center gap-1 justify-center">
+						<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-red-500">
+							<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+							<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+							<g id="SVGRepo_iconCarrier">
+								<path fill-rule="evenodd" clip-rule="evenodd"
+									d="M16.125 12C16.125 11.5858 15.7892 11.25 15.375 11.25L4.40244 11.25L6.36309 9.56944C6.67759 9.29988 6.71401 8.8264 6.44444 8.51191C6.17488 8.19741 5.7014 8.16099 5.38691 8.43056L1.88691 11.4306C1.72067 11.573 1.625 11.7811 1.625 12C1.625 12.2189 1.72067 12.427 1.88691 12.5694L5.38691 15.5694C5.7014 15.839 6.17488 15.8026 6.44444 15.4881C6.71401 15.1736 6.67759 14.7001 6.36309 14.4306L4.40244 12.75L15.375 12.75C15.7892 12.75 16.125 12.4142 16.125 12Z">
+								</path>
+								<path
+									d="M9.375 8C9.375 8.70219 9.375 9.05329 9.54351 9.3055C9.61648 9.41471 9.71025 9.50848 9.81946 9.58145C10.0717 9.74996 10.4228 9.74996 11.125 9.74996L15.375 9.74996C16.6176 9.74996 17.625 10.7573 17.625 12C17.625 13.2426 16.6176 14.25 15.375 14.25L11.125 14.25C10.4228 14.25 10.0716 14.25 9.8194 14.4185C9.71023 14.4915 9.6165 14.5852 9.54355 14.6944C9.375 14.9466 9.375 15.2977 9.375 16C9.375 18.8284 9.375 20.2426 10.2537 21.1213C11.1324 22 12.5464 22 15.3748 22L16.3748 22C19.2032 22 20.6174 22 21.4961 21.1213C22.3748 20.2426 22.3748 18.8284 22.3748 16L22.3748 8C22.3748 5.17158 22.3748 3.75736 21.4961 2.87868C20.6174 2 19.2032 2 16.3748 2L15.3748 2C12.5464 2 11.1324 2 10.2537 2.87868C9.375 3.75736 9.375 5.17157 9.375 8Z" "></path>
+							</g>
+						</svg><span>Logout</span></button>
 				</div>
 			</div>
 		</div>
