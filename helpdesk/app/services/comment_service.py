@@ -1,6 +1,6 @@
 from app import db
 from app import app
-from app.framework.service.abstract_service import AbstractService
+from app.framework.service.abstract_auth_service import AbstractAuthService
 from app.models.comment import Comment
 from app.mappers.comment_mapper import CommentMapper
 from app.framework.decorators.injectable import injectable
