@@ -1,6 +1,7 @@
 from app.dtos.priority_dto import PriorityDTO
 from app.framework.mapper import AbstractMapper
 from app.models.priority import Priority
+from app.forms.priorities.priority_form import PriorityForm
 
 class PriorityMapper(AbstractMapper):
     @staticmethod

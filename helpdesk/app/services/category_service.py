@@ -20,6 +20,7 @@ class CategoryService(AbstractService):
             return None
         else:
             return CategoryMapper.entity_to_dto(category)
+
     def find_all(self):
         pass
 
