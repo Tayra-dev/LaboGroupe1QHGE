@@ -1,12 +1,12 @@
 from app import db
 from app import app
-from app.framework.service.abstract_auth_service import AbstractAuthService
+from app.framework.service.abstract_service import AbstractService
 from app.models.comment import Comment
 from app.mappers.comment_mapper import CommentMapper
 from app.framework.decorators.injectable import injectable
 
 @injectable
-class CommentService(AbstractAuthService):
+class CommentService(AbstractService):
 
     def find_all(self):
         """Tous les commentaires."""
@@ -50,7 +50,7 @@ class CommentService(AbstractAuthService):
             return None
             # db.session.rollback() pas nécessaire car juste un appel à la db
 
-    def find_all_by(sefl, **kwargs):
+    def find_all_by(self, **kwargs):
         """Tous les commentaires sur base d'un critère (exemple  ticket_id)"""
         try:
 
