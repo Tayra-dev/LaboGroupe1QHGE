@@ -3,18 +3,19 @@ from flask import flash, redirect, url_for, render_template
 
 # from app.framework.decorators.auth_required import auth_required
 from app.services.comment_service import CommentService
-from app.services.auth_service import AuthService
+from app.framework.service.abstract_auth_service import AbstractAuthService
 from app.forms.comment_form import CommentForm
+from app.framework.decorators.inject import inject
 
 @app.route('/tickets/<ticket_id>/comments', methods=['GET', 'POST'])
 # + Ajouter un décorateur qui vérifie que l'auteur du commentaire est loggé
+@inject
 def comment_create(
     ticket_id: int,
-    # comment_service: CommentService,
-    # auth_service: AuthService 
+    comment_service: CommentService,
+    # auth_service: AbstractAuthService
 ):
     """Création d'un commentaire sur un ticket"""
-    comment_service = CommentService()
     
     form = CommentForm()
 
@@ -43,4 +44,25 @@ def comment_create(
         "comments/create.html",
         form=form,
         ticket_id=ticket_id
+    )
+
+@app.route('tickets/<ticket_id>/comments', methods='GET')
+@inject
+def comment_list(
+    ticket_id: int,
+    comment_service: CommentService,
+    # auth_service: AbstractAuthService
+):
+    """Lister tous les commentaires d'un ticket"""
+
+    comments = comment_service.find_all_by(ticket_id=ticket_id)
+
+    if comments is None:
+        app.logger.error(f"Error | comment list impossible")
+        # return redirect(url_for('ticket_list'))
+
+    return render_template(
+        'comments/list.html',
+        ticket_id=ticket_id,
+        comments=comments
     )

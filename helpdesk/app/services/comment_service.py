@@ -1,13 +1,15 @@
 from app import db
 from app import app
-from app.framework.service.abstract_service import AbstractService
+from app.framework.service.abstract_auth_service import AbstractAuthService
 from app.models.comment import Comment
 from app.mappers.comment_mapper import CommentMapper
+from app.framework.decorators.injectable import injectable
 
-class CommentService(AbstractService):
+@injectable
+class CommentService(AbstractAuthService):
 
     def find_all(self):
-        """Tous les commentaires (sous forme de DTO)."""
+        """Tous les commentaires."""
         try:
             comments = Comment.query.all()
 
@@ -19,7 +21,7 @@ class CommentService(AbstractService):
             # db.session.rollback() pas nécessaire car juste un appel à la db
 
     def find_one(self, entity_id: int):
-        """Un commentaire par sa clé primaire, ou None."""
+        """Un commentaire par son Id."""
         try:
             comment = db.session.get(Comment, entity_id)
 
@@ -34,7 +36,7 @@ class CommentService(AbstractService):
             # db.session.rollback() pas nécessaire car juste un appel à la db
 
     def find_one_by(self, **kwargs):
-        """Un commentaire par n'importe quelle colonne: find_one_by(username='x')."""
+        """Un commentaire sur base d'un critère (exemple ticket_id)."""
         try:
             comment = Comment.query.filter_by(**kwargs).one_or_none()
 
@@ -48,6 +50,20 @@ class CommentService(AbstractService):
             return None
             # db.session.rollback() pas nécessaire car juste un appel à la db
 
+    def find_all_by(sefl, **kwargs):
+        """Tous les commentaires sur base d'un critère (exemple  ticket_id)"""
+        try:
+
+            comments = Comment.query.filter_by(**kwargs).all()
+
+            if comments is None:
+                return None
+
+            return [CommentMapper.entity_to_dto(comment) for comment in comments]
+
+        except Exception as e:
+            app.logger.error(f"Error | find_all_by comment: {e}")
+            return None
 
     def insert(self, data):
         """Crée un commentaire à partir d'un formulaire validé."""
