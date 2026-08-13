@@ -17,7 +17,7 @@ class KnowledgeArticle(BaseEntity, db.Model):
     author_id = db.Column("authorid", db.ForeignKey("users.userid"))
 
     category = db.relationship("Category", back_populates="knowledge_articles")
-    author = db.relationship("Author", back_populates="knowledge_articles")
+    author = db.relationship("User", back_populates="knowledge_articles")
 
     def __repr__(self):
         return f"<Article {self.article_id}: {self.title}>"
