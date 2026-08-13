@@ -1,4 +1,4 @@
-from flask import redirect, render_template
+from flask import render_template
 from app import app, csrf
 from app.forms.categories.category_form import CategoryForm
 from app.services.category_service import CategoryService
