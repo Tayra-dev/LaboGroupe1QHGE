@@ -12,7 +12,7 @@ class CategoryDTO(AbstractDTO):
         self.knowledge_articles = []
 
     @staticmethod
-    def build_from_entity(category: Category) -> "CategoryDTO":
+    def build_from_entity(category: Category, include_tickets: bool = False) -> "CategoryDTO":
 
         category_dto = CategoryDTO()
 
@@ -23,8 +23,12 @@ class CategoryDTO(AbstractDTO):
         from app.dtos.ticket_dto import TicketDTO
         from app.dtos.knowledge_article_dto import KnowledgeArticleDTO
 
-        category_dto.tickets_list = [TicketDTO.build_from_entity(ticket)
+        if include_tickets and category.ticket:
+            category_dto.tickets_list = [TicketDTO.build_from_entity(ticket)
                                      for ticket in category.ticket]
+        else:
+            category_dto.tickets_list = []
+
         category_dto.knowledge_articles = [KnowledgeArticleDTO.build_from_entity(article)
                                            for article in category.knowledge_articles]
 

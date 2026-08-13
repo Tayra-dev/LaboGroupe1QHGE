@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired, Length
 
 DATA_REQUIRED_MSG = "Field required!"
 LENGTH_MSG = "Length must be between %(min)d and %(max)d characters"
+
 class CategoryForm(FlaskForm):
     """Form for creating and editing categories."""
 

@@ -22,9 +22,17 @@ class PriorityService(AbstractService):
             return PriorityMapper.entity_to_dto(priority)
 
     def find_all(self):
-        pass
+        try:
+            priorities = Priority.query.all()
+            return [PriorityMapper.entity_to_dto(p) for p in priorities]
+        except SQLAlchemyError as e:
+            app.logger.error(f"Erreur lors de la récupération des priorités: {e}")
+            return None
 
     def find_one(self, entity_id: int):
+        pass
+
+    def find_one_entity(self, entity_id: int):
         pass
 
     def find_one_by(self, **kwargs):

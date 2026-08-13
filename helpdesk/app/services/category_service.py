@@ -22,9 +22,17 @@ class CategoryService(AbstractService):
             return CategoryMapper.entity_to_dto(category)
 
     def find_all(self):
-        pass
+        try:
+            categories = Category.query.all()
+            return [CategoryMapper.entity_to_dto(c) for c in categories]
+        except SQLAlchemyError as e:
+            app.logger.error(f"Erreur lors de la récupération des catégories: {e}")
+            return None
 
     def find_one(self, entity_id: int):
+        pass
+
+    def find_one_entity(self, entity_id: int):
         pass
 
     def find_one_by(self, **kwargs):
