@@ -27,26 +27,26 @@
 
                         <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
 
-                            <!-- En-tête du commentaire -->
+                            <!-- Auteur + date de création -->
                             <div class="flex justify-between items-start gap-4">
 
                                 <div class="flex items-center gap-3">
 
-                                    <!-- Avatar -->
                                     <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                         <span class="text-indigo-700 font-semibold">
-                                            {{ comment.author.username[0]|upper }}
+                                            {{ comment.author_id }}
                                         </span>
                                     </div>
 
                                     <div>
                                         <p class="font-semibold text-gray-900">
-                                            {{ comment.author.username }}
+                                            Auteur #{{ comment.author_id }}
                                         </p>
 
                                         {% if comment.created_at %}
                                             <p class="text-sm text-gray-500">
-                                                {{ comment.created_at }}
+                                                Créé le
+                                                {{ comment.created_at.strftime('%d/%m/%Y à %H:%M') }}
                                             </p>
                                         {% endif %}
                                     </div>
@@ -62,21 +62,20 @@
                             <!-- Contenu -->
                             <div class="mt-5">
                                 <p class="text-gray-700 whitespace-pre-line leading-relaxed">
-                                    {{ comment.content }}
+                                    {{ comment.comment_content }}
                                 </p>
                             </div>
 
-                            <!-- Informations de modification -->
+                            <!-- Date de modification -->
                             {% if comment.updated_at %}
-                                <div class="mt-5 pt-3 border-t border-gray-100">
-
-                                    {% if comment.updated_at != comment.created_at %}
+                                {% if comment.updated_at != comment.created_at %}
+                                    <div class="mt-5 pt-3 border-t border-gray-100">
                                         <p class="text-xs text-gray-400">
-                                            Modifié le {{ comment.updated_at }}
+                                            Modifié le
+                                            {{ comment.updated_at.strftime('%d/%m/%Y à %H:%M') }}
                                         </p>
-                                    {% endif %}
-
-                                </div>
+                                    </div>
+                                {% endif %}
                             {% endif %}
 
                         </article>
