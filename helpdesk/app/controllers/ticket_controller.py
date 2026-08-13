@@ -10,11 +10,11 @@ from app.models.equipment import Equipment
 
 @app.route("/tickets/create", methods=["GET", "POST"])
 # ! For Direct Url API Testing (PostMan)
-@csrf.exempt
+# @csrf.exempt
 def create_ticket():
     # ! For Direct Url API Testing (PostMan)
-    form = TicketForm(meta={"csrf": False})
-    # form = TicketForm()
+    # form = TicketForm(meta={"csrf": False})
+    form = TicketForm()
 
     # Load options from db for categories, priorities
     # and equipment into forms (temporary bypass for equipments)
@@ -37,5 +37,5 @@ def create_ticket():
         TicketService().insert(form)
         return "SUCCESS", 201
     # ! For Direct Url API Testing (PostMan)
-    return f"VALIDATION ERROR: {form.errors}", 400 
-    # return render_template("tickets/create.html", form=form)
+    # return f"VALIDATION ERROR: {form.errors}", 400 
+    return render_template("tickets/create.html", form=form)
