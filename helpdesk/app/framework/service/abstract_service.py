@@ -19,8 +19,12 @@ class AbstractService(ABC):
         """Toutes les entités (sous forme de DTO)."""
 
     @abstractmethod
+    def find_one_entity(self, entity_id: int):
+         """Une entité par sa clé primaire, ou None."""
+
+    @abstractmethod
     def find_one(self, entity_id: int):
-        """Une entité par sa clé primaire, ou None."""
+        """Un DTO de l'entité par sa clé primaire, ou None."""
 
     @abstractmethod
     def find_one_by(self, **kwargs):
