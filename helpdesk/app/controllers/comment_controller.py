@@ -5,16 +5,17 @@ from flask import flash, redirect, url_for, render_template
 from app.services.comment_service import CommentService
 from app.services.auth_service import AuthService
 from app.forms.comment_form import CommentForm
+from app.framework.decorators.inject import inject
 
 @app.route('/tickets/<ticket_id>/comments', methods=['GET', 'POST'])
 # + Ajouter un décorateur qui vérifie que l'auteur du commentaire est loggé
+@inject
 def comment_create(
     ticket_id: int,
-    # comment_service: CommentService,
+    comment_service: CommentService,
     # auth_service: AuthService 
 ):
     """Création d'un commentaire sur un ticket"""
-    comment_service = CommentService()
     
     form = CommentForm()
 
