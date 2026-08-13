@@ -3,7 +3,7 @@ from flask import flash, redirect, url_for, render_template
 
 # from app.framework.decorators.auth_required import auth_required
 from app.services.comment_service import CommentService
-from app.services.auth_service import AuthService
+from app.framework.service.abstract_auth_service import AbstractAuthService
 from app.forms.comment_form import CommentForm
 from app.framework.decorators.inject import inject
 
