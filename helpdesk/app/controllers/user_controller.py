@@ -10,11 +10,13 @@ from app.framework.service.abstract_auth_service import AbstractAuthService
 
 @app.route("/register", methods=["GET", "POST"])
 @inject
-def register(user_service: UserService):
+def register(user_service: UserService, auth_service: AbstractAuthService):
     form = UserRegisterForm()
     if form.validate_on_submit():
-        user_service.insert(form)
-        # TODO: return redirect("/success") or log user automatically
+        user = user_service.insert(form)
+        if user is not None:
+            auth_service.login(user)
+            return redirect("/dashboard")
     return render_template("users/register.html", form=form)
 
 
@@ -27,7 +29,16 @@ def login(user_service: UserService, auth_service: AbstractAuthService):
         user = user_service.login(form)
         if user is not None:
             auth_service.login(user)
-            # TODO: redirect(...)
+            return redirect("/dashboard")
         else:
             error = "Identifiant ou mot de passe incorrect"
     return render_template("users/login.html", form=form, error=error)
+
+
+@app.route("/dashboard", methods=["GET", "POST"])
+@inject
+def goToDashboard(auth_service: AbstractAuthService):
+    current_user = auth_service.get_current_user()
+    if current_user is None:
+        return redirect("/login")
+    return render_template("dashboard/dashboard.html", user=current_user)

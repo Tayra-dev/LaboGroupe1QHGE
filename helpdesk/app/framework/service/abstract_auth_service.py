@@ -5,7 +5,7 @@ from app.dtos.user_dto import UserDTO
 
 class AbstractAuthService(ABC):
     @abstractmethod
-    def get_current_user(self):
+    def get_current_user(self) -> UserDTO | None:
         pass
 
     @abstractmethod
