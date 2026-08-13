@@ -13,20 +13,23 @@ from app.framework.decorators.inject import inject
 def comment_create(
     ticket_id: int,
     comment_service: CommentService,
-    # auth_service: AbstractAuthService
+    auth_service: AbstractAuthService
 ):
     """Création d'un commentaire sur un ticket"""
+
+    current_user = auth_service.get_current_user()
+
+    if current_user is None:
+        flash("Vous devez être connecté.")
+        return redirect(url_for("login"))
     
     form = CommentForm()
 
     if form.validate_on_submit():
 
-        # current_user = auth_service.get_current_user() #controller le nom de la fonction dans auth_service
-        fake_user_id = 1
-        
         data = {
             "form": form,
-            "author_id": fake_user_id, #current_user.user_id,
+            "author_id": current_user.user_id,
             "ticket_id": ticket_id
         }
 
@@ -38,8 +41,11 @@ def comment_create(
         
         else:
             flash("Commentaire ajouté avec succès.")
-            # return redirect(url_for("ticket_detail", ticket_id=ticket_id))
-
+            return redirect(url_for(
+                "comment_list",
+                ticket_id=ticket_id
+            ))
+        
     return render_template(
         "comments/create.html",
         form=form,
@@ -51,7 +57,6 @@ def comment_create(
 def comment_list(
     ticket_id: int,
     comment_service: CommentService,
-    # auth_service: AbstractAuthService
 ):
     """Lister tous les commentaires d'un ticket"""
 
@@ -74,6 +79,7 @@ def comment_edit(
     ticket_id: int,
     comment_id: int,
     comment_service: CommentService,
+    auth_service: AbstractAuthService,
 ):
     """Modifier le commentaire d'un ticket"""
 
@@ -82,6 +88,19 @@ def comment_edit(
     if comment is None:
         app.logger.error(f"Error | comment find one impossible")
         flash("Impossible de trouver le commentaire.")
+        return redirect(url_for(
+            "comment_list",
+            ticket_id=ticket_id
+        ))
+
+    current_user = auth_service.get_current_user()
+
+    if current_user is None:
+        flash("Vous devez être connecté.")
+        return redirect(url_for("login"))
+
+    if current_user.user_id != comment.author_id:
+        flash("Vous n'êtes pas autorisé à modifier ce commentaire")
         return redirect(url_for(
             "comment_list",
             ticket_id=ticket_id
@@ -122,7 +141,8 @@ def comment_edit(
 def comment_delete(
     ticket_id: int,
     comment_id: int,
-    comment_service: CommentService
+    comment_service: CommentService,
+    auth_service: AbstractAuthService
 ):
     """Supprimer le commentaire d'un ticket"""
 
@@ -131,6 +151,22 @@ def comment_delete(
     if comment is None:
         app.logger.error(f"Error | comment find one impossible")
         flash("Impossible de trouver le commentaire")
+        return redirect(url_for(
+            "comment_list",
+            ticket_id=ticket_id
+        ))
+
+    current_user = auth_service.get_current_user()
+
+    if current_user is None:
+        flash("Vous devez être connecté.")
+        return redirect(url_for("login"))
+
+    is_author = current_user.user_id == comment.author_id
+    is_admin = "admin" in current_user.roles
+
+    if not is_author or not is_admin:
+        flash("Vous n'êtes pas autorisé à supprimer ce commentaire")
         return redirect(url_for(
             "comment_list",
             ticket_id=ticket_id
