@@ -7,7 +7,7 @@ from app.framework.service.abstract_auth_service import AbstractAuthService
 from app.forms.comment_form import CommentForm
 from app.framework.decorators.inject import inject
 
-@app.route('/tickets/<ticket_id>/comments', methods=['GET', 'POST'])
+@app.route('/tickets/<ticket_id>/comments/create', methods=['GET', 'POST'])
 # + Ajouter un décorateur qui vérifie que l'auteur du commentaire est loggé
 @inject
 def comment_create(
@@ -38,7 +38,7 @@ def comment_create(
         
         else:
             flash("Commentaire ajouté avec succès.")
-            # return redirect(url_for("ticket_detail", ticket_id=ticket_id))
+            return redirect(url_for("comment_list", ticket_id=ticket_id))
 
     return render_template(
         "comments/create.html",
@@ -59,7 +59,7 @@ def comment_list(
 
     if comments is None:
         app.logger.error(f"Error | comment list impossible")
-        # return redirect(url_for('ticket_list'))
+        comments = []
 
     return render_template(
         'comments/list.html',
