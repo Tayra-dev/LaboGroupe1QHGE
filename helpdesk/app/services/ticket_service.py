@@ -45,8 +45,17 @@ class TicketService(AbstractService):
         else:
             return TicketMapper.entity_to_dto(ticket)
 
+    # Used for technicians to see ALL tickets
+    # TODO: Add order by date (newest to oldest)
     def find_all(self):
-        pass
+        tickets = Ticket.query.all()
+        return [TicketMapper.entity_to_dto(t) for t in tickets]
+
+    # Used for clients to see all tickets they created
+    # TODO: Add order by date (newest to oldest)
+    def find_all_by(self, **kwargs):
+        tickets = Ticket.query.filter_by(author_id=kwargs["author_id"]).all()
+        return [TicketMapper.entity_to_dto(t) for t in tickets]
 
     def find_one(self, entity_id: int):
         pass
