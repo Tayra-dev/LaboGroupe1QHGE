@@ -1,3 +1,5 @@
+from flask import jsonify
+from app.models.ticket import Ticket
 from flask import render_template
 from app import app, csrf
 from app.forms.tickets.ticket_form import TicketForm
@@ -42,3 +44,10 @@ def create_ticket():
     # ! For Direct Url API Testing (PostMan)
     # return f"VALIDATION ERROR: {form.errors}", 400 
     return render_template("tickets/create.html", form=form)
+
+@app.route("/tickets", methods=["GET"])
+# ! For Direct Url API Testing (PostMan)
+# @csrf.exempt
+def display_all_tickets():
+    tickets = TicketService().find_all()
+    return render_template("tickets/display_all.html", tickets=tickets)  
