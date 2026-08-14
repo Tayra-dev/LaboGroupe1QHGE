@@ -50,3 +50,34 @@ class TicketService(AbstractService):
 
     def delete(self, entity_id: int):
         pass
+
+    def change_ticket_status(self, ticket_id: int, new_status: str, current_user_id: int):
+
+        try: 
+            ticket = Ticket.query.get(ticket_id)
+            if not ticket:
+                return None
+
+            old_status = ticket.status
+
+            ticket.status = new_status
+
+            history_data = {
+                "ticket_id": ticket_id,
+                "user_id": current_user_id,
+                "old_status": old_status,
+                "new_status": new_status,            
+            }
+
+            from app.services.ticket_status_history_service import TicketStatusHistoryService
+            history_service = TicketStatusHistoryService()
+            history_service.insert(history_data)
+
+            db.session.commit()
+
+            return TicketMapper.entity_to_dto(ticket)    
+
+        except Exception as e:
+            db.session.rollback()
+            app.logger.error(f"Error | change status ticket error : {e}")
+            return None
