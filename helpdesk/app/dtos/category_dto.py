@@ -25,7 +25,7 @@ class CategoryDTO(AbstractDTO):
 
         if include_tickets and category.ticket:
             category_dto.tickets_list = [TicketDTO.build_from_entity(ticket)
-                                     for ticket in category.ticket]
+                                     for ticket in category.tickets]
         else:
             category_dto.tickets_list = []
 
