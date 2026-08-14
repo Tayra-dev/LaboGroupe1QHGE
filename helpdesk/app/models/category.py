@@ -11,7 +11,7 @@ class Category(BaseEntity, db.Model):
     description = db.Column("categorydescription", db.String(255), nullable=False)
 
     # Relationships
-    ticket = db.relationship("Ticket", back_populates="category")
+    tickets = db.relationship("Ticket", back_populates="category")
     knowledge_articles = db.relationship("KnowledgeArticle", back_populates="category")
 
     def __repr__(self):
