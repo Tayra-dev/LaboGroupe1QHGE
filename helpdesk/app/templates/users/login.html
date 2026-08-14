@@ -2,29 +2,41 @@
 
 {% extends "layout/main_layout.html" %}
 {% block content %}
-<section class="bg-white flex flex-col grow items-center">
+<section class="flex flex-col grow bg-gradient-to-br from-indigo-800 to-indigo-500">
 	<div class="flex items-center justify-center mx-auto my-8 w-full grow px-4">
 		<div class="mx-auto px-6 sm:px-12 py-8 bg-gray-100 rounded-md shadow-xl h-fit w-full max-w-md min-w-sm">
 			<div>
 				<h2 class="text-2xl">Se connecter</h2>
 				<hr class="px-12 mt-2 text-gray-300">
-				<form method="post" class="flex flex-col">
-					{{ form.hidden_tag() }}
-					<div class="flex flex-col w-full gap-6 p-6">
-						{{ input_field(form.name, placeholder="utilisateur_42") }}
-						{{ input_field(form.password, type="password") }}
-					</div>
-					<button type="submit"
-						class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded inline-flex items-center w-fit mx-auto my-6">
-						<span>Se connecter</span>
-					</button>
-				</form>
-				{% if error %}
-				<div class="text-red-500">
-					<span>error</span>
-				</div>
-				{% endif %}
 			</div>
+			<form method="post" class="flex flex-col">
+				{{ form.hidden_tag() }}
+				<div class="flex flex-col w-full gap-6 pt-6 pb-1">
+					{{ input_field(form.name, placeholder="utilisateur_42") }}
+					{{ input_field(form.password, type="password") }}
+				</div>
+				<div class="text-right text-sm">
+					<p><a class="text-indigo-600 font-bold" href="/forgot-password">Mot de passe oublié ?</a></p>
+				</div>
+				<button type="submit"
+					class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded inline-flex items-center justify-center w-full mt-6">
+					<svg fill="#FFFFFF" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2">
+						<path fill-rule="evenodd"
+							d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z"
+							clip-rule="evenodd"></path>
+					</svg>
+					<span>Se connecter</span>
+				</button>
+				<div class="p-1 text-center text-sm">
+					<p>Pas encore de compte ? <a class="text-indigo-600 font-bold ml-1"
+							href="/register">Inscrivez-vous</a></p>
+				</div>
+			</form>
+			{% if error %}
+			<div class="text-red-500">
+				<span>{{ error }}</span>
+			</div>
+			{% endif %}
 		</div>
 	</div>
 </section>
