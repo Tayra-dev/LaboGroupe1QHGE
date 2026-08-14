@@ -1,4 +1,4 @@
-{% from "macros/_form_macros.html" import input_field %}
+{% from "macros/_form_macros.html" import input_field, select_field %}
 
 {% extends "layout/main_layout.html" %}
 
@@ -21,13 +21,13 @@
                     {{ input_field(form.description, placeholder="Ticket's description.")}}
                 </div>
                 <div class="flex gap-6 p-6">
-                    {{ input_field(form.category_id, placeholder="Ticket's category.")}}
+                    {{ select_field(form.category_id) }}
                 </div>
                 <div class="flex gap-6 p-6">
-                    {{ input_field(form.priority_id, placeholder="Ticket's priority.")}}
+                    {{ select_field(form.priority_id) }}
                 </div>
                 <div class="flex gap-6 p-6">
-                    {{ input_field(form.equipment_id, placeholder="Ticket's equipment.")}}
+                    {{ select_field(form.equipment_id) }}
                 </div>
                 <button type="submit"
                     class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded inline-flex items-center w-fit mx-auto my-6">

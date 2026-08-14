@@ -21,13 +21,16 @@ def create_ticket():
     category_service = CategoryService()
     priority_service = PriorityService()
 
+    # Note for later:
+    # WTForms except to recieve (value stored in db, value displayed in html for user)
+    # when it comes to select fields.
     form.category_id.choices = [
         (category.category_id, category.category_name) for category in category_service.find_all()
     ]
     form.priority_id.choices = [
         (priority.priority_id, priority.priority_name) for priority in priority_service.find_all()
     ]
-    # Line to change with EquipmentService.find_all() once available!
+    # Line to change with EquipmentService.find_all() once available 
     form.equipment_id.choices = [
         (equipment.equipment_id, equipment.name) for equipment in Equipment.query.all()
     ]
