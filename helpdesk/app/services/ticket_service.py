@@ -1,3 +1,5 @@
+from app.framework.decorators.injectable import injectable
+from flask import flash, redirect, url_for
 from app.models.priority import Priority
 from datetime import timedelta, datetime
 from sqlalchemy.exc import SQLAlchemyError
@@ -7,16 +9,26 @@ from app.forms.tickets.ticket_form import TicketForm
 from app.mappers.ticket_mapper import TicketMapper
 from app.models.ticket import Ticket
 from app.framework.service import AbstractService
+from app.framework.decorators.inject import inject
+from .auth_service import AbstractAuthService
 
+@injectable
 class TicketService(AbstractService):
-    def insert(self, form: TicketForm) -> TicketDTO | None:
+    @inject
+    def insert(self, form: TicketForm, auth_service: AbstractAuthService) -> TicketDTO | None:
         try:
             ticket = Ticket()
             TicketMapper.form_to_entity(form, ticket)
 
             # Set current user as author
-            # Temporary: Set the first user in db as author
-            ticket.author_id = 1
+            current_user = auth_service.get_current_user()
+            if current_user is None:
+                flash("Vous devez être connecté pour créer un ticket")
+                app.logger.error("Utilisateur non connecté lors de la création d'un ticket")
+                return None
+
+            ticket.author_id = current_user.user_id
+            
             # Set status to "New" by default
             ticket.status = "New"
 
