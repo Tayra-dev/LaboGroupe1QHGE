@@ -2,6 +2,9 @@ from app.framework.dto import AbstractDTO
 from app.dtos.category_dto import CategoryDTO
 from app.dtos.priority_dto import PriorityDTO
 from app.models.ticket import Ticket
+from app.dtos.comment_dto import CommentDTO
+from app.dtos.attachment_dto import AttachmentDTO
+from app.dtos.ticket_status_history_dto import TicketStatusHistoryDTO
 
 
 class TicketDTO(AbstractDTO):

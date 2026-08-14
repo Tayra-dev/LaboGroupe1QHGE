@@ -34,3 +34,26 @@
 	</div>
 </div>
 {% endmacro %}
+
+{% macro select_field(field) %}
+<div class="flex flex-col w-full">
+	<label for="{{ field.name }}" class="block text-sm/6 font-medium text-gray-900">{{ field.label }}</label>
+	<div class="mt-2">
+		<select name="{{ field.name }}" id="{{ field.name }}"
+			class="block w-full rounded-md bg-white pl-3 pr-10 py-1.5 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm">
+			{% for option in field.choices %}
+			<option value="{{ option[0] }}">{{ option[1] }}</option>
+			{% endfor %}
+		</select>
+		<div>
+			{% if field.errors %}
+			<ul class="text-sm text-red-500 mt-1">
+				{% for error in field.errors %}
+				<li>{{ error }}</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% endmacro %}

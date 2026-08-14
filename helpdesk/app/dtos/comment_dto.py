@@ -1,4 +1,4 @@
-from app.framework.dto.abstract_dto import AbstractDTO
+from app.framework.dto import AbstractDTO
 from app.models.comment import Comment
 
 class CommentDTO(AbstractDTO):

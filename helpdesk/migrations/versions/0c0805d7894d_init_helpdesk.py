@@ -214,7 +214,7 @@ def upgrade():
     )
     op.create_table('ticketstatushistories',
     sa.Column('historyid', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ticketid ', sa.Integer(), nullable=False),
+    sa.Column('ticketid', sa.Integer(), nullable=False),
     sa.Column('userid', sa.Integer(), nullable=False),
     sa.Column('oldstatus', sa.String(length=50), nullable=False),
     sa.Column('newstatus', sa.String(length=50), nullable=False),
@@ -222,7 +222,7 @@ def upgrade():
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('active', sa.Boolean(), server_default=sa.text('true'), nullable=False),
-    sa.ForeignKeyConstraint(['ticketid '], ['tickets.ticketid'], ),
+    sa.ForeignKeyConstraint(['ticketid'], ['tickets.ticketid'], ),
     sa.ForeignKeyConstraint(['userid'], ['users.userid'], ),
     sa.PrimaryKeyConstraint('historyid')
     )
