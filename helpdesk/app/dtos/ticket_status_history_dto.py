@@ -1,4 +1,4 @@
-from app.dtos.abstract_dto import AbstractDTO
+from app.framework.dto.abstract_dto import AbstractDTO
 from app.models.ticket_status_history import TicketStatusHistory
 
 class TicketStatusHistoryDTO(AbstractDTO):
