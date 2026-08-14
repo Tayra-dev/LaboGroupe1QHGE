@@ -14,7 +14,7 @@ class Priority(BaseEntity, db.Model):
     delay_hours = db.Column("prioritydelayhours", db.Integer, nullable=False)
 
     # Relationships
-    ticket = db.relationship("Ticket", back_populates="priority")
+    tickets = db.relationship("Ticket", back_populates="priority")
 
     def __repr__(self):
         return f"<Priority ['{self.name}' ID: {self.priority_id}]>"

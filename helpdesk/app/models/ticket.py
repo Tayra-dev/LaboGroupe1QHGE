@@ -37,8 +37,8 @@ class Ticket(BaseEntity, db.Model):
     # Relationships
     author = db.relationship("User", foreign_keys=[author_id], back_populates="created_tickets")
     technician = db.relationship("User", foreign_keys=[technician_id], back_populates="assigned_tickets")
-    category = db.relationship("Category", back_populates="ticket")
-    priority = db.relationship("Priority", back_populates="ticket")
+    category = db.relationship("Category", back_populates="tickets")
+    priority = db.relationship("Priority", back_populates="tickets")
     equipment = db.relationship("Equipment", back_populates="ticket")
     attachments = db.relationship("Attachment", back_populates="ticket")
     comments = db.relationship("Comment", back_populates="ticket")
