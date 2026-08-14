@@ -78,7 +78,7 @@ class UserService(AbstractService):
             user = User()
             UserMapper.form_to_entity(form, user)
             user.password = self.__hasher.hash(user.password)
-            role = Role.query.filter_by(name="USER").first()
+            role = Role.query.filter_by(name="CLIENT").first()
             if role is not None:
                 user.add_role(role)
             db.session.add(user)
