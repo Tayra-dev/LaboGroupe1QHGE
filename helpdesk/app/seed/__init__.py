@@ -16,7 +16,7 @@ __all__ = [
     f.name[:-3] for f in path.iterdir() if f.is_file() and f.name.endswith(".py")
 ]
 
-ROLES = ["USER", "ADMIN", "TECHNICIAN"]
+ROLES = ["CLIENT", "TECHNICIEN", "ADMIN"]
 USERS = [
     (
         "admin",
@@ -26,9 +26,9 @@ USERS = [
         "admin",
         None,
         None,
-        ["USER", "ADMIN"],
+        ["CLIENT", "ADMIN"],
     ),
-    ("test", "test@example.com", "Technobel2026", "test", "test", None, None, ["USER"]),
+    ("test", "test@example.com", "Technobel2026", "test", "test", None, None, ["CLIENT"]),
     (
         "technician",
         "technician@example.com",
@@ -37,7 +37,7 @@ USERS = [
         "technician",
         None,
         None,
-        ["TECHNICIAN"],
+        ["TECHNICIEN"],
     ),
 ]
 
