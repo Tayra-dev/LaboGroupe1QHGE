@@ -10,13 +10,30 @@ class TicketStatusHistoryService(AbstractService):
     def find_all(self):
         """Tous les historiques de status."""
         try:
-            status_history_all = TicketStatusHistory.query.all()
+            status_histories = TicketStatusHistory.query.all()
 
-            return [TicketStatusHistoryMapper.entity_to_dto(status_history) for status_history in status_history_all]
+            return [TicketStatusHistoryMapper.entity_to_dto(status_history) for status_history in status_histories]
 
         except Exception as e:
             app.logger.error(f"Error | ticket status history find all impossible: {e}")
-            return None        
+            return None
+
+    def find_all_by(self, **kwargs):
+        """Tous les historiques de status selon un critère"""
+
+        try:
+            status_histories = (
+                TicketStatusHistory.query
+                .filter_by(**kwargs)
+                .order_by(TicketStatusHistory.created_at.desc())
+                .all()
+                )
+
+            return [TicketStatusHistoryMapper.entity_to_dto(status_history) for status_history in status_histories]        
+
+        except Exception as e:
+            app.logger.error(f"Error | ticket status history find all by impossible: {e}")
+            return []        
 
     def find_one_entity(self, entity_id: int):
         """Un historique par son Id ou None."""
