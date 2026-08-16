@@ -9,18 +9,18 @@ def auth_required(role_name=None, or_is_current_user=False):
         def wrapper(*args, **kwargs):
             auth_service = app.injector["AbstractAuthService"]
             current_user = auth_service.get_current_user()
+            is_current_user = True
             current_user_is_authorized = True
-            current_user_is_admin = True
 
             if current_user is None:
                 return redirect(url_for("login"))
             if role_name is not None:
                 user_role_names = [role.name for role in current_user.roles]
                 if role_name not in user_role_names:
-                    current_user_is_admin = False
+                    current_user_is_authorized = False
             if or_is_current_user:
-                current_user_is_authorized = current_user.user_id == kwargs.get("user_id")
-            if not current_user_is_admin and not current_user_is_authorized:
+                is_current_user = current_user.user_id == kwargs.get("user_id")
+            if not current_user_is_authorized and not is_current_user:
                 abort(403)
             return func(*args, **kwargs)
         return wrapper
