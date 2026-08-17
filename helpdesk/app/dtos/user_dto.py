@@ -27,3 +27,14 @@ class UserDTO(AbstractDTO):
         data = dict(self.__dict__)
         data["roles"] = [role.get_json_parsable() for role in self.roles]
         return data
+
+    def is_admin(self) -> bool:
+        return "ADMIN" in self.role_names()
+
+    def has_role(self, rolename: str) -> bool:
+        return rolename in self.role_names()
+
+    # --- Utils ---------------------------------------------------------------
+
+    def role_names(self) -> list[str]:
+        return [role.name for role in self.roles]

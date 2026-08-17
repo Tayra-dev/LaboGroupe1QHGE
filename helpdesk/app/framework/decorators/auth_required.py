@@ -1,4 +1,4 @@
-from flask import redirect, url_for, abort
+from flask import redirect, request, url_for, abort, flash
 from functools import wraps
 from app import app
 
@@ -9,19 +9,20 @@ def auth_required(role_name=None, or_is_current_user=False):
         def wrapper(*args, **kwargs):
             auth_service = app.injector["AbstractAuthService"]
             current_user = auth_service.get_current_user()
-            is_current_user = True
-            current_user_is_authorized = True
 
             if current_user is None:
-                return redirect(url_for("login"))
-            if role_name is not None:
-                user_role_names = [role.name for role in current_user.roles]
-                if role_name not in user_role_names:
-                    current_user_is_authorized = False
-            if or_is_current_user:
-                is_current_user = current_user.user_id == kwargs.get("user_id")
-            if not current_user_is_authorized and not is_current_user:
-                abort(403)
-            return func(*args, **kwargs)
+                flash("Vous devez être connecté pour accéder à cette page.", "warning")
+                return redirect(url_for("login", next=request.path))
+            if current_user.is_admin():
+                return func(*args, **kwargs)
+            if role_name is not None and current_user.has_role(role_name):
+                return func(*args, **kwargs)
+            if or_is_current_user and current_user.user_id == kwargs.get("user_id"):
+                return func(*args, **kwargs)
+            if not role_name and not or_is_current_user:
+                return func(*args, **kwargs)
+            abort(403)
+
         return wrapper
+
     return decorator
