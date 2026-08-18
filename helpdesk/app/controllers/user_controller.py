@@ -2,6 +2,7 @@ from flask import redirect, render_template
 
 from app import app
 from app.framework.decorators.inject import inject
+from app.framework.decorators.auth_required import auth_required
 from app.forms.users.user_register_form import UserRegisterForm
 from app.forms.users.user_login_form import UserLoginForm
 from app.services.user_service import UserService
@@ -47,8 +48,6 @@ def logout(auth_service: AbstractAuthService):
 
 
 @app.route("/dashboard", methods=["GET", "POST"])
-@inject
-def goToDashboard(auth_service: AbstractAuthService):
-    if not auth_service.is_authenticated():
-        return redirect("/")
+@auth_required()
+def goToDashboard():
     return render_template("dashboard/dashboard.html")
