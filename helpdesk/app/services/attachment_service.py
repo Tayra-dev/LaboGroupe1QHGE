@@ -2,6 +2,11 @@ from app.framework.service.abstract_service import AbstractService
 from app import app, db
 from app.models.attachment import Attachment
 from app.mappers.attachment_mapper import AttachmentMapper
+from app.framework.decorators.injectable import injectable
+import os
+from flask import current_app
+
+@injectable
 class AttachmentService(AbstractService):
 
     def find_all(self):
@@ -66,13 +71,29 @@ class AttachmentService(AbstractService):
             author_id = data['author_id']
             ticket_id = data['ticket_id']
 
+            file_data = form.attachment.data
+
+            if not file_data:
+                return None
+
+            filename = file_data.filename
+
+            relative_path = os.path.join("uploads", "attachments", filename)
+
+            upload_folder = os.path.join(current_app.root_path, "uploads", "attachments")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            absolute_path = os.path.join(upload_folder, filename)
+            file_data.save(absolute_path)
+
             attachment = Attachment()
 
             attachment = AttachmentMapper.form_to_entity(
                 form,
                 attachment,
                 author_id,
-                ticket_id
+                ticket_id,
+                relative_path 
             )
 
             db.session.add(attachment)

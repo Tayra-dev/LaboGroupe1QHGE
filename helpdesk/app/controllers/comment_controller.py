@@ -8,7 +8,6 @@ from app.forms.comment_form import CommentForm
 from app.framework.decorators.inject import inject
 
 @app.route('/tickets/<ticket_id>/comments/create', methods=['GET', 'POST'])
-# + Ajouter un décorateur qui vérifie que l'auteur du commentaire est loggé
 @inject
 def comment_create(
     ticket_id: int,
