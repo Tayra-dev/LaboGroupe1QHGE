@@ -10,6 +10,11 @@ TEXT_VALIDATORS = [
     Length(min=2, max=50, message=LENGTH_MSG),
 ]
 
+TEXT_AREA_VALIDATORS = [
+    DataRequired(message=DATA_REQUIRED_MSG),
+    Length(min=2, max=500, message=LENGTH_MSG),
+]
+
 EMAIL_VALIDATORS = [
     DataRequired(message=DATA_REQUIRED_MSG),
     Email("L'adresse email est requise pour l'inscription"),
