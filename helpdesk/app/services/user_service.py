@@ -30,24 +30,24 @@ class UserService(AbstractService):
         else:
             return [UserMapper.entity_to_dto(user) for user in users]
 
-    def find_one_entity(self, entity_id: int) -> User | None:
+    def find_one_entity(self, user_id: int) -> User | None:
         try:
-            return db.session.get(User, entity_id)
+            return db.session.get(User, user_id)
         except SQLAlchemyError as e:
             db.session.rollback()
             app.logger.error(
-                f"Erreur lors de la récupération de l'utilisateur, id {entity_id}: {e}"
+                f"Erreur lors de la récupération de l'utilisateur, id {user_id}: {e}"
             )
             return None
 
-    def find_one(self, entity_id: int) -> UserDTO | None:
+    def find_one(self, user_id: int) -> UserDTO | None:
         try:
-            user = db.session.get(User, entity_id)
+            user = db.session.get(User, user_id)
             return UserMapper.entity_to_dto(user) if user is not None else None
         except SQLAlchemyError as e:
             db.session.rollback()
             app.logger.error(
-                f"Erreur lors de la récupération de l'utilisateur (DTO), id {entity_id}: {e}"
+                f"Erreur lors de la récupération de l'utilisateur (DTO), id {user_id}: {e}"
             )
             return None
 
@@ -90,9 +90,9 @@ class UserService(AbstractService):
         else:
             return UserMapper.entity_to_dto(user)
 
-    def update(self, entity_id: int, data) -> UserDTO | None:
+    def update(self, user_id: int, data) -> UserDTO | None:
         try:
-            user = self.find_one_entity(entity_id)
+            user = self.find_one_entity(user_id)
             if user is None:
                 return None
             UserMapper.form_to_entity(data, user)
@@ -100,15 +100,15 @@ class UserService(AbstractService):
         except SQLAlchemyError as e:
             db.session.rollback()
             app.logger.error(
-                f"Erreur lors de la mise à jour de l'utilisateur {entity_id}: {e}"
+                f"Erreur lors de la mise à jour de l'utilisateur {user_id}: {e}"
             )
             return None
         else:
             return UserMapper.entity_to_dto(user)
 
-    def delete(self, entity_id: int) -> int | None:
+    def delete(self, user_id: int) -> int | None:
         try:
-            user = self.find_one_entity(entity_id)
+            user = self.find_one_entity(user_id)
             if user is None:
                 return None
             user.soft_delete()
@@ -116,11 +116,11 @@ class UserService(AbstractService):
         except SQLAlchemyError as e:
             db.session.rollback()
             app.logger.error(
-                f"Erreur lors de la suppression de l'utilisateur {entity_id}: {e}"
+                f"Erreur lors de la suppression de l'utilisateur {user_id}: {e}"
             )
             return None
         else:
-            return entity_id
+            return user_id
 
     def login(self, form: UserLoginForm) -> UserDTO | None:
         try:

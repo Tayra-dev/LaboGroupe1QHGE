@@ -5,122 +5,146 @@
 
 {% block title %}{{ 'Créer une nouvelle équipe' if team is none else 'Modifier ' ~ team.name }}{% endblock %}
 {% block content %}
-<section class="flex flex-col grow">
-	<h1 class="text-2xl mb-4">
-		{{ 'Créer une nouvelle équipe' if team is none else 'Modifier « ' ~ team.name ~ ' »' }}
-	</h1>
-	<form method="post" class="flex flex-col">
-		{{ form.hidden_tag() }}
-		<div class="flex flex-col sm:flex-row gap-6 p-6">
-			{{ input_field(form.name) }}
-		</div>
-		<div class="flex flex-col sm:flex-row gap-6 p-6">
-			{{ textarea_field(form.description) }}
-		</div>
-		<fieldset class="p-6">
-			<legend for="{{ form.members.name }}" class="block text-sm/6 font-medium text-gray-900">{{
-				form.members.label }}</legend>
-
-			<div class="overflow-x-auto px-4 md:px-8 mt-6">
-				<table class="w-full max-w-7xl mx-auto">
-					<thead
-						class="text-slate-900 text-left text-sm font-semibold border-b border-slate-300 whitespace-nowrap">
-						<tr>
-							<th scope="col" aria-sort="none" class="w-8 pl-3 py-3.5">
-								<label class="group has-[input:checked]:text-slate-900 inline-block">
-									<input type="checkbox" class="sr-only" id="master-checkbox" />
-									<span class="flex h-4 w-4 shrink-0 items-center justify-center rounded outline-1 outline-slate-300 
-                                 bg-white
-                                 group-has-[input:checked]:bg-indigo-600
-                                 group-has-[input:checked]:outline-indigo-600
-                                 group-focus-within:outline-2
-                                 group-focus-within:outline-indigo-600" aria-hidden="true">
-										<!-- Checkmark -->
-										<svg class="size-3 text-white opacity-0 group-has-[input:checked]:opacity-100"
-											viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2">
-											<path d="M1 5l3 3 7-7" />
-										</svg>
-									</span>
-								</label>
-							</th>
-							<th scope="col" aria-sort="none" class="px-3 py-3.5">
-								<button type="button" class="flex items-center gap-1 cursor-pointer"
-									aria-label="Sort by name">
-									Name
-									<svg xmlns="http://www.w3.org/2000/svg" class="size-3 fill-slate-400"
-										viewBox="0 0 64 64" aria-hidden="true">
-										<path
-											d="M15.99 28.58h32.02c1.964.073 3.15-2.443 1.81-3.9L33.81 6.08c-.904-1.096-2.716-1.098-3.62 0l-16.01 18.6c-1.334 1.455-.16 3.975 1.81 3.9m32.02 6.84H15.99c-1.964-.073-3.15 2.443-1.81 3.9l16.01 18.6c.904 1.096 2.716 1.098 3.62 0l16.01-18.6c1.334-1.455.16-3.975-1.81-3.9" />
-									</svg>
-								</button>
-							</th>
-							<th scope="col" aria-sort="none" class="px-3 py-3.5">
-								<button type="button" class="flex items-center gap-1 cursor-pointer"
-									aria-label="Sort by email">
-									Email
-									<svg xmlns="http://www.w3.org/2000/svg" class="size-3 fill-slate-400"
-										viewBox="0 0 64 64" aria-hidden="true">
-										<path
-											d="M15.99 28.58h32.02c1.964.073 3.15-2.443 1.81-3.9L33.81 6.08c-.904-1.096-2.716-1.098-3.62 0l-16.01 18.6c-1.334 1.455-.16 3.975 1.81 3.9m32.02 6.84H15.99c-1.964-.073-3.15 2.443-1.81 3.9l16.01 18.6c.904 1.096 2.716 1.098 3.62 0l16.01-18.6c1.334-1.455.16-3.975-1.81-3.9" />
-									</svg>
-								</button>
-							</th>
-							<th scope="col" aria-sort="none" class="px-3 py-3.5">
-								<button type="button" class="flex items-center gap-1 cursor-pointer"
-									aria-label="Sort by role">
-									Roles
-									<svg xmlns="http://www.w3.org/2000/svg" class="size-3 fill-slate-400"
-										viewBox="0 0 64 64" aria-hidden="true">
-										<path
-											d="M15.99 28.58h32.02c1.964.073 3.15-2.443 1.81-3.9L33.81 6.08c-.904-1.096-2.716-1.098-3.62 0l-16.01 18.6c-1.334 1.455-.16 3.975 1.81 3.9m32.02 6.84H15.99c-1.964-.073-3.15 2.443-1.81 3.9l16.01 18.6c.904 1.096 2.716 1.098 3.62 0l16.01-18.6c1.334-1.455.16-3.975-1.81-3.9" />
-									</svg>
-								</button>
-							</th>
-						</tr>
-					</thead>
-
-					<tbody class="text-sm divide-y divide-slate-200">
-						{% for subfield, user in members_data %}
-						<tr class="has-[:checked]:bg-indigo-50/50">
-							<td class="w-8 pl-3 py-4">
-								<label class="group has-[input:checked]:text-slate-900 inline-block">
-									{{ subfield(class_="sr-only row-checkbox") }}
-									<span class="flex h-4 w-4 shrink-0 items-center justify-center rounded outline-1 outline-slate-300
-                                 bg-white
-                                 group-has-[input:checked]:bg-indigo-600
-                                 group-has-[input:checked]:outline-indigo-600
-                                 group-focus-within:outline-2
-                                 group-focus-within:outline-indigo-600" aria-hidden="true">
-										<!-- Checkmark -->
-										<svg class="size-3 text-white opacity-0 group-has-[input:checked]:opacity-100"
-											viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2">
-											<path d="M1 5l3 3 7-7" />
-										</svg>
-									</span>
-								</label>
-							</td>
-							<td class="px-3 py-4 font-medium text-slate-900 whitespace-nowrap">
-								{{user.firstname}} {{user.lastname}}
-							</td>
-							<td class="px-3 py-4 text-slate-500">
-								{{user.email}}
-							</td>
-
-							<td class="px-3 py-4 text-slate-500 flex flex-row gap-1">
-								{% for role in user.roles %}
-								<span
-									class="px-1.5 py-1.5 border rounded-md {{ roletag_classes[role.name]['bg'] }} {{ roletag_classes[role.name]['border'] }}">{{role.name}}</span>
-								{% endfor %}
-							</td>
-						</tr>
-						{% endfor %}
-
-
-					</tbody>
-				</table>
+<section class="flex flex-col grow bg-gradient-to-br from-indigo-800 to-indigo-500">
+	<div class="mx-auto px-6 sm:px-12 py-8 bg-gray-100 rounded-md shadow-xl h-fit w-full lg:w-2/3 xl:w-1/2 my-8">
+		<h2 class="text-2xl mb-4">
+			{{ 'Créer une nouvelle équipe' if team is none else 'Modifier « ' ~ team.name ~ ' »' }}
+		</h2>
+		<hr class="px-12 mt-2 text-gray-300">
+		<form method="post" class="flex flex-col">
+			{{ form.hidden_tag() }}
+			<div class="flex flex-col sm:flex-row gap-6 p-6 w-full">
+				{{ input_field(form.name) }}
 			</div>
+			<div class="flex flex-col sm:flex-row gap-6 p-6 w-full">
+				{{ textarea_field(form.description) }}
+			</div>
+			<fieldset class="p-6">
+				<legend class="block text-sm/6 font-medium text-gray-900">{{ form.members.label }}</legend>
+				<div class="overflow-x-auto px-4 md:px-8 mt-2 bg-white rounded-md overflow-y-auto">
+					<table class="checkbox-table w-full max-w-7xl mx-auto">
+						<thead
+							class="text-slate-900 text-left text-sm font-semibold border-b border-slate-300 whitespace-nowrap">
+							<tr>
+								<th scope="col" aria-sort="none" class="w-8 pl-3 py-3.5">
+									<label class="group has-[input:checked]:text-slate-900 inline-block">
+										<input type="checkbox" class="sr-only master-checkbox" />
+										<span class="flex h-4 w-4 shrink-0 items-center justify-center rounded outline-1 outline-slate-300 
+                                 bg-white
+                                 group-has-[input:checked]:bg-indigo-600
+                                 group-has-[input:checked]:outline-indigo-600
+                                 group-focus-within:outline-2
+                                 group-focus-within:outline-indigo-600" aria-hidden="true">
+											<!-- Checkmark -->
+											<svg class="size-3 text-white opacity-0 group-has-[input:checked]:opacity-100"
+												viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M1 5l3 3 7-7" />
+											</svg>
+										</span>
+									</label>
+								</th>
+								<th scope="col" aria-sort="none" class="px-3 py-3.5">
+									<button type="button" class="flex items-center gap-1 cursor-pointer"
+										aria-label="Sort by name">
+										Name
+										<svg xmlns="http://www.w3.org/2000/svg" class="size-3 fill-slate-400"
+											viewBox="0 0 64 64" aria-hidden="true">
+											<path
+												d="M15.99 28.58h32.02c1.964.073 3.15-2.443 1.81-3.9L33.81 6.08c-.904-1.096-2.716-1.098-3.62 0l-16.01 18.6c-1.334 1.455-.16 3.975 1.81 3.9m32.02 6.84H15.99c-1.964-.073-3.15 2.443-1.81 3.9l16.01 18.6c.904 1.096 2.716 1.098 3.62 0l16.01-18.6c1.334-1.455.16-3.975-1.81-3.9" />
+										</svg>
+									</button>
+								</th>
+								<th scope="col" aria-sort="none" class="px-3 py-3.5">
+									<button type="button" class="flex items-center gap-1 cursor-pointer"
+										aria-label="Sort by email">
+										Email
+										<svg xmlns="http://www.w3.org/2000/svg" class="size-3 fill-slate-400"
+											viewBox="0 0 64 64" aria-hidden="true">
+											<path
+												d="M15.99 28.58h32.02c1.964.073 3.15-2.443 1.81-3.9L33.81 6.08c-.904-1.096-2.716-1.098-3.62 0l-16.01 18.6c-1.334 1.455-.16 3.975 1.81 3.9m32.02 6.84H15.99c-1.964-.073-3.15 2.443-1.81 3.9l16.01 18.6c.904 1.096 2.716 1.098 3.62 0l16.01-18.6c1.334-1.455.16-3.975-1.81-3.9" />
+										</svg>
+									</button>
+								</th>
+								<th scope="col" aria-sort="none" class="px-3 py-3.5">
+									<button type="button" class="flex items-center gap-1 cursor-pointer"
+										aria-label="Sort by role">
+										Roles
+										<svg xmlns="http://www.w3.org/2000/svg" class="size-3 fill-slate-400"
+											viewBox="0 0 64 64" aria-hidden="true">
+											<path
+												d="M15.99 28.58h32.02c1.964.073 3.15-2.443 1.81-3.9L33.81 6.08c-.904-1.096-2.716-1.098-3.62 0l-16.01 18.6c-1.334 1.455-.16 3.975 1.81 3.9m32.02 6.84H15.99c-1.964-.073-3.15 2.443-1.81 3.9l16.01 18.6c.904 1.096 2.716 1.098 3.62 0l16.01-18.6c1.334-1.455.16-3.975-1.81-3.9" />
+										</svg>
+									</button>
+								</th>
+							</tr>
+						</thead>
 
-			<fieldset />
-	</form>
+						<tbody class="text-sm divide-y divide-slate-200">
+							{% for subfield, user in members_data %}
+							<tr class="has-[:checked]:bg-indigo-50/50">
+								<td class="w-8 pl-3 py-4">
+									<label class="group has-[input:checked]:text-slate-900 inline-block">
+										{{ subfield(class_="sr-only row-checkbox") }}
+										<span class="flex h-4 w-4 shrink-0 items-center justify-center rounded outline-1 outline-slate-300
+                                 bg-white
+                                 group-has-[input:checked]:bg-indigo-600
+                                 group-has-[input:checked]:outline-indigo-600
+                                 group-focus-within:outline-2
+                                 group-focus-within:outline-indigo-600" aria-hidden="true">
+											<!-- Checkmark -->
+											<svg class="size-3 text-white opacity-0 group-has-[input:checked]:opacity-100"
+												viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M1 5l3 3 7-7" />
+											</svg>
+										</span>
+									</label>
+								</td>
+								<td class="px-3 py-4 font-medium text-slate-900 whitespace-nowrap">
+									{{user.firstname}} {{user.lastname}}
+								</td>
+								<td class="px-3 py-4 text-slate-500">
+									{{user.email}}
+								</td>
+
+								<td class="px-3 py-4 text-slate-500 flex flex-row gap-1">
+									{% for role in user.roles %}
+									<span
+										class="px-1.5 py-1.5 border rounded-md {{ roletag_classes[role.name]['bg'] }} {{ roletag_classes[role.name]['border'] }}">{{role.name}}</span>
+									{% endfor %}
+								</td>
+							</tr>
+							{% endfor %}
+
+
+						</tbody>
+					</table>
+				</div>
+			</fieldset>
+			<button type="submit"
+				class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded inline-flex items-center justify-center w-full mt-6">
+				<svg fill="#FFFFFF" viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg"
+					class="w-4 h-4 mr-2">
+					<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+					<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+					<g id="SVGRepo_iconCarrier">
+						<defs>
+							<style>
+								.cls-1 {
+									fill: none;
+								}
+							</style>
+						</defs>
+						<title>send--alt--filled</title>
+						<path
+							d="M27.71,4.29a1,1,0,0,0-1.05-.23l-22,8a1,1,0,0,0,0,1.87l8.59,3.43L19.59,11,21,12.41l-6.37,6.37,3.44,8.59A1,1,0,0,0,19,28h0a1,1,0,0,0,.92-.66l8-22A1,1,0,0,0,27.71,4.29Z">
+						</path>
+						<rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1"
+							width="32" height="32"></rect>
+					</g>
+				</svg>
+				<span>{{ "Créer l'équipe" if team is none else "Enregistrer les modifications" }}</span>
+			</button>
+		</form>
+	</div>
 </section>
 {% endblock %}
