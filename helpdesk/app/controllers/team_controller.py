@@ -3,16 +3,16 @@ from flask import redirect, render_template
 from app import app
 from app.framework.decorators.inject import inject
 from app.framework.decorators.auth_required import auth_required
-from app.forms.teams.team_form import TeamForm
+from app.forms.teams.team_form import TeamCreationForm
 from app.services.user_service import UserService
 
 
 @app.route("/teams/add", methods=["GET", "POST"])
-@auth_required()
+@auth_required(role_name="ADMIN")
 @inject
 def create_team(user_service: UserService):
-    form = TeamForm()
-    users = user_service.find_all()
+    form = TeamCreationForm()
+    users = [user for user in user_service.find_all() if user.has_role("TECHNICIEN")]
     users_by_id = {user.user_id: user for user in users}
 
     form.members.choices = [

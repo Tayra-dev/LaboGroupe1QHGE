@@ -62,10 +62,10 @@
 {% macro textarea_field(field, placeholder="") %}
 <div class="flex flex-col w-full">
 	<label for="{{ field.name }}" class="block text-sm/6 font-medium text-gray-900">{{ field.label }}</label>
-	<div class="flex items-center rounded-md pl-3 bg-white outline-1 -outline-offset-1 outline-gray-300 has-[textarea:focus-within]:outline-2 has-[textare:focus-within]:-outline-offset-2 has-[textarea:focus-within]:outline-indigo-600 {{ "
+	<div class="flex items-center rounded-md pl-3 mt-2 bg-white outline-1 -outline-offset-1 outline-gray-300 has-[textarea:focus-within]:outline-2 has-[textarea:focus-within]:-outline-offset-2 has-[textarea:focus-within]:outline-indigo-600 {{ "
 		outline-red-500" if field.errors else "" }}">
 		<textarea name="{{ field.name }}" id="{{ field.name }}" placeholder="{{placeholder}}"
-			class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 focus-within:placeholder:opacity-0"></textarea>
+			class="block h-40 min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 focus-within:placeholder:opacity-0"></textarea>
 		<div>
 			{% if field.errors %}
 			<ul class=" text-sm text-red-500 mt-1">

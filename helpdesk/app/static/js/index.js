@@ -44,9 +44,16 @@ const handleDismissNotification = () => {
     };
 };
 
+const handleTableMasterCheckboxes = () => {
+    const tables = document.querySelectorAll(".checkbox-table");
+    if (!tables.length) return;
+	console.log(tables);
+};
+
 // Init JS
 // TODO: Wrap all this shit in a an init wrapper
 handleShowHidePassword();
 handleToggleAvatarDropdown();
 handleLogout();
 handleDismissNotification();
+handleTableMasterCheckboxes();

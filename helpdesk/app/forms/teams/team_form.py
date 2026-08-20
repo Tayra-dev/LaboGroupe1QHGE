@@ -14,7 +14,7 @@ class SelectMultipleCheckboxesField(SelectMultipleField):
     option_widget = CheckboxInput()
 
 
-class TeamForm(FlaskForm):
+class TeamCreationForm(FlaskForm):
     name = StringField("Nom de l'équipe de support", validators=TEXT_VALIDATORS)
     description = TextAreaField("Description", validators=TEXT_AREA_VALIDATORS)
     members = SelectMultipleCheckboxesField(

@@ -1,7 +1,7 @@
 from app.dtos.team_dto import TeamDTO
 from app.framework.mapper import AbstractMapper
 from app.models.team import Team
-from app.forms.teams.team_form import TeamForm
+from app.forms.teams.team_form import TeamCreationForm
 
 
 class TeamMapper(AbstractMapper):
@@ -11,7 +11,8 @@ class TeamMapper(AbstractMapper):
 
     @staticmethod
     def form_to_entity(form, team: Team) -> Team:
-        if isinstance(form, TeamForm):
+        if isinstance(form, TeamCreationForm):
             team.name = form.name.data
             team.description = form.name.description
+            # TODO: handle members (technicians)
         return team
