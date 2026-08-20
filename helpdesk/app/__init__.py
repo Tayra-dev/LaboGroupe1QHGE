@@ -111,3 +111,42 @@ from app.services.auth_service import AbstractAuthService
 @inject
 def inject_current_user(auth_service: AbstractAuthService):
     return {"current_user": auth_service.get_current_user()}
+
+
+@app.context_processor
+def inject_dynamic_css_classes():
+    return {
+        "roletag_classes": {
+            "CLIENT": {"bg": "bg-indigo-50", "border": "border-indigo-700"},
+            "ADMIN": {
+                "bg": "bg-red-50",
+                "border": "border-red-700",
+            },
+            "TECHNICIEN": {
+                "bg": "bg-orange-50",
+                "border": "border-orange-700",
+            },
+        },
+        "notification_classes": {
+            "success": {
+                "bg": "bg-green-50",
+                "border": "border-green-700",
+                "ring": "ring-green-500",
+            },
+            "warning": {
+                "bg": "bg-yellow-50",
+                "border": "border-yellow-700",
+                "ring": "ring-yellow-500",
+            },
+            "error": {
+                "bg": "bg-red-50",
+                "border": "border-red-700",
+                "ring": "ring-red-500",
+            },
+            "info": {
+                "bg": "bg-blue-50",
+                "border": "border-blue-700",
+                "ring": "ring-blue-500",
+            },
+        },
+    }

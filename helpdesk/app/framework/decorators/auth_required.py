@@ -7,11 +7,11 @@ def auth_required(role_name=None, is_current_user=False):
     """
     Usage du décorateur:
     A apposer à toute route dans les différents controllers qui nécessite a minima d'être authentifié (login).
-    1) Sans paramètre : role_name=None et is_current_user=False : route protégée par authentification pour un utilisateur lambda (login attendu)
-    2) Avec un role_name="ADMIN" (et un is_current_user par défaut/False) la route autorise un admin (privilèges admin)
+    1) L'admin est toujours autorisé : on vérifie cela dans les role de l'utilisateur par défaut.
+    2) Sans paramètre : role_name=None et is_current_user=False : route protégée par authentification pour un utilisateur lambda (login attendu). L'admin passe.
     3) Avec un role_name="autre_role_valide", la route autorise les utilisateurs possédant ce rôle (ex. Technicien)
-    4) Avec un is_current_user à True, la route autorise l'utilisateur qui effectue la requête (et non les autres). Ex. L'auteur d'un commentaire peut éditer son propre commentaire, mais pas ceux des autres clients. 
-    (Ne pas oublier les parenthèses : @auth_required() car on est sur un décorateur à deux niveaux qui peut prendre des paramètres.) 
+    4) Avec un is_current_user à True, la route autorise l'utilisateur qui effectue la requête (et non les autres). Ex. L'auteur d'un commentaire peut éditer son propre commentaire, mais pas ceux des autres clients.
+    (Ne pas oublier les parenthèses : @auth_required() car on est sur un décorateur à deux niveaux qui peut prendre des paramètres.)
     """
     def decorator(func):
         @wraps(func)
