@@ -1,3 +1,4 @@
+from app.framework.decorators.injectable import injectable
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, db
 from app.framework.service.abstract_service import AbstractService
@@ -6,6 +7,7 @@ from app.forms.categories.category_form import CategoryForm
 from app.mappers.category_mapper import CategoryMapper
 from app.models.category import Category
 
+@injectable
 class CategoryService(AbstractService):
     def insert(self, form: CategoryForm) -> CategoryDTO | None:
         try:
