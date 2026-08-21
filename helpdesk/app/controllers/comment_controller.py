@@ -1,5 +1,5 @@
 from app import app
-from flask import flash, redirect, url_for, render_template
+from flask import flash, redirect, url_for, render_template, request
 from flask_wtf import FlaskForm
 
 # from app.framework.decorators.auth_required import auth_required
@@ -109,7 +109,7 @@ def comment_edit(
             ticket_id=ticket_id
         ))
     
-    form = CommentForm(obj=comment)
+    form = CommentForm()
 
     if form.validate_on_submit():
 
@@ -130,12 +130,15 @@ def comment_edit(
                 "comment_list",
                 ticket_id=ticket_id
             ))
-            
+        
+    elif request.method == "GET":
+        form.comment_content.data = comment.comment_content
+
     return render_template(
         'comments/edit.html',
         form=form,
         ticket_id=ticket_id,
-        comment=comment
+        comment=form.comment_content
     )
  
 
