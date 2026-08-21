@@ -1,0 +1,166 @@
+{% extends "layout/main_layout.html" %}
+
+{% block content %}
+<section class="bg-white flex flex-col grow">
+	<div class="px-8 py-6 flex items-center justify-between">
+		<div>
+			<a href="{{ url_for('site_list') }}"
+				class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">
+				← Tous les sites
+			</a>
+
+			<h1 class="text-4xl mt-3">
+				{{ site.name }}
+			</h1>
+		</div>
+		{% if current_user and current_user.is_admin() %}
+			<div class="mt-10 flex justify-between items-center space-x-3">
+				<a href="{{ url_for('site_update', site_id=site.site_id) }}"
+					class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded">
+					Modifier le site
+				</a>
+
+				<form method="POST"
+					action="{{ url_for('site_delete', site_id=site.site_id) }}"
+					onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce site ?');">
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+					<button type="submit"
+						class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">
+						Supprimer
+					</button>
+				</form>
+			</div>
+		{% endif %}
+	</div>
+
+	<div class="flex items-center mx-auto my-8 w-full">
+		<div class="mx-auto w-5/6 xl:w-3/4 px-8 py-8 bg-gray-100 rounded-md shadow-xl">
+
+			<div>
+				<h2 class="text-2xl font-semibold text-gray-800">
+					Informations du site
+				</h2>
+				<hr class="mt-2 text-gray-300">
+				<div class="mt-6 bg-white rounded-md shadow p-6">
+					<div class="flex flex-col gap-3">
+						<div>
+							<p class="text-sm font-semibold text-gray-500">
+								Nom
+							</p>
+							<p class="text-lg font-bold text-gray-800">
+								{{ site.name }}
+							</p>
+						</div>
+						<div>
+							<p class="text-sm font-semibold text-gray-500">
+								Adresse
+							</p>
+							<p class="text-gray-700">
+								{{ site.address }}
+							</p>
+						</div>
+						<div>
+							<p class="text-sm font-semibold text-gray-500">
+								Ville
+							</p>
+							<p class="text-gray-700">
+								{{ site.city }}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-10">
+				<div class="flex items-center justify-between">
+					<h2 class="text-2xl font-semibold text-gray-800">
+						Utilisateurs
+					</h2>
+					<span class="text-sm text-gray-500">
+						{{ site.users|length }}
+						utilisateur{% if site.users|length != 1 %}s{% endif %}
+					</span>
+				</div>
+				<hr class="mt-2 text-gray-300">
+				{% if site.users %}
+					<div class="mt-6 flex flex-col gap-3">
+						{% for user in site.users %}
+							<div class="bg-white rounded-md shadow p-5 hover:shadow-lg transition">
+								<div class="flex items-center justify-between">
+									<div>
+										<h3 class="text-lg font-bold text-gray-800">
+											{{ user.name }} {{ user.firstname }} {{ user.lastname }}
+										</h3>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				{% else %}
+					<div class="bg-white rounded-md shadow p-6 mt-6 text-center text-gray-500">
+						<p>
+							Aucun utilisateur associé à ce site.
+						</p>
+					</div>
+				{% endif %}
+
+			</div>
+
+			<div class="mt-10">
+				<div class="flex items-center justify-between">
+					<h2 class="text-2xl font-semibold text-gray-800">
+						Équipements
+					</h2>
+					<span class="text-sm text-gray-500">
+						{{ site.equipments|length }}
+						équipement{% if site.equipments|length != 1 %}s{% endif %}
+					</span>
+				</div>
+
+				<hr class="mt-2 text-gray-300">
+				{% if site.equipments %}
+					<div class="mt-6 flex flex-col gap-3">
+						{% for equipment in site.equipments %}
+							<div class="bg-white rounded-md shadow p-5 hover:shadow-lg transition">
+
+								<h3 class="text-lg font-bold text-gray-800">
+									{{ equipment.name }}
+								</h3>
+							</div>
+						{% endfor %}
+					</div>
+				{% else %}
+					<div class="bg-white rounded-md shadow p-6 mt-6 text-center text-gray-500">
+						<p>
+							Aucun équipement associé à ce site.
+						</p>
+					</div>
+				{% endif %}
+
+			</div>
+
+			{% if current_user and current_user.is_admin() %}
+				<div class="mt-10 pt-6 border-t border-gray-300 flex justify-between items-center">
+
+					<a href="{{ url_for('site_update', site_id=site.site_id) }}"
+						class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded">
+						Modifier le site
+					</a>
+
+					<form method="DELETE"
+						action="{{ url_for('site_delete', site_id=site.site_id) }}"
+						onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce site ?');">
+
+						<button type="submit"
+							class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">
+							Supprimer
+						</button>
+					</form>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</section>
+
+{% endblock %}
