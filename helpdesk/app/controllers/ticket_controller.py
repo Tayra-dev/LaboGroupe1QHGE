@@ -1,3 +1,4 @@
+from app.services.user_service import UserService
 from app.framework.service import AbstractAuthService
 from flask import url_for
 from app.forms.users import user_login_form
@@ -66,7 +67,6 @@ def display_all_tickets(
     return render_template("tickets/display_all.html", tickets=tickets)  
 
 
-
 # Display tickets of currently connected user
 @app.route("/tickets/user", methods=["POST", "GET"])
 @inject
@@ -82,4 +82,25 @@ def display_user_tickets(
         
     tickets = ticket_service.find_all_by(author_id=current_user.user_id)
     return render_template("tickets/display_all.html", tickets=tickets)
-    
+
+
+# Detail view for one speficic ticket
+@app.route("/tickets/<int:ticket_id>", methods=["GET", "POST"])
+# ! For Direct Url API Testing (PostMan)
+# @csrf.exempt
+@inject
+def ticket_detail(
+    ticket_service: TicketService,
+    user_service: UserService,
+    ticket_id: int
+):
+    print(ticket_id)
+    ticket = ticket_service.find_one(ticket_id)
+
+    author_id = ticket.ticket_author_id
+    author = user_service.find_one(author_id)
+
+    if ticket is None:
+        flash("Ticket not found", "warning")
+        return redirect(url_for("display_all_tickets"))
+    return render_template("tickets/detail.html", ticket=ticket, author=author) 
