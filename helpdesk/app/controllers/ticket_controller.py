@@ -1,3 +1,12 @@
+from app.framework.service import AbstractAuthService
+from flask import url_for
+from app.forms.users import user_login_form
+from app.forms.users import user_login_form
+from app.forms.users import user_login_form
+from flask import redirect
+from flask.helpers import flash
+from app.framework.decorators.inject import inject
+from app.services.auth_service import AuthService
 from flask import jsonify
 from app.models.ticket import Ticket
 from flask import render_template
@@ -6,6 +15,7 @@ from app.forms.tickets.ticket_form import TicketForm
 from app.services.ticket_service import TicketService
 from app.services.category_service import CategoryService
 from app.services.priority_service import PriorityService
+
 
 # Temporary import
 from app.models.equipment import Equipment
@@ -45,9 +55,28 @@ def create_ticket():
     # return f"VALIDATION ERROR: {form.errors}", 400 
     return render_template("tickets/create.html", form=form)
 
-@app.route("/tickets", methods=["GET"])
+@app.route("/tickets", methods=["POST","GET"])
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
 def display_all_tickets():
     tickets = TicketService().find_all()
     return render_template("tickets/display_all.html", tickets=tickets)  
+
+
+
+# Display tickets of currently connected user
+@app.route("/tickets/user", methods=["POST", "GET"])
+@inject
+def display_user_tickets(
+    auth_service: AbstractAuthService,
+    ticket_service: TicketService
+    ):
+
+    current_user = auth_service.get_current_user()
+    if current_user is None:
+        flash("You must be logged in to display your tickets", "warning")
+        return redirect(url_for("login"))
+        
+    tickets = ticket_service.find_all_by(author_id=current_user.user_id)
+    return render_template("tickets/display_all.html", tickets=tickets)
+    
