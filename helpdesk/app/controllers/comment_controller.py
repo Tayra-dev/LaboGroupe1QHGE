@@ -60,7 +60,7 @@ def comment_list(
 ):
     """Lister tous les commentaires d'un ticket"""
 
-    flaskform = FlaskForm()
+    form = CommentForm()
 
     comments = comment_service.find_all_by(ticket_id=ticket_id)
 
@@ -78,7 +78,7 @@ def comment_list(
         'comments/list.html',
         ticket_id=ticket_id,
         comments=comments,
-        form=flaskform,
+        form=form,
         authors_map= authors_map
     )
 
