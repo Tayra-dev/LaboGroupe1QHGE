@@ -13,6 +13,5 @@ class TeamMapper(AbstractMapper):
     def form_to_entity(form, team: Team) -> Team:
         if isinstance(form, TeamCreationForm):
             team.name = form.name.data
-            team.description = form.name.description
-            # TODO: handle members (technicians)
+            team.description = form.description.data
         return team

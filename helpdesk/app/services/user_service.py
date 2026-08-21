@@ -73,6 +73,20 @@ class UserService(AbstractService):
             )
             return None
 
+    def find_entities_by_ids(self, ids: list[int]) -> list[User]:
+        try:
+            users = (
+                User.query.filter_by(active=True).filter(User.user_id.in_(ids)).all()
+            )
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            app.logger.error(
+                f"Erreur lors de la récupération des utilisateurs portant les id {ids} : {e}"
+            )
+            return []
+        else:
+            return users
+
     def insert(self, form: UserRegisterForm) -> UserDTO | None:
         try:
             user = User()
