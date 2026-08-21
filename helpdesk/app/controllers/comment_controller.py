@@ -1,5 +1,6 @@
 from app import app
 from flask import flash, redirect, url_for, render_template
+from flask_wtf import FlaskForm
 
 # from app.framework.decorators.auth_required import auth_required
 from app.services.comment_service import CommentService
@@ -19,7 +20,7 @@ def comment_create(
     current_user = auth_service.get_current_user()
 
     if current_user is None:
-        flash("Vous devez être connecté.")
+        flash("Vous devez être connecté.", "error")
         return redirect(url_for("login"))
     
     form = CommentForm()
@@ -36,10 +37,10 @@ def comment_create(
 
         if comment is None:
             app.logger.error(f"Error | comment create impossible")
-            flash("Impossible de créer le commentaire.")
+            flash("Impossible de créer le commentaire.", "error")
         
         else:
-            flash("Commentaire ajouté avec succès.")
+            flash("Commentaire ajouté avec succès.", "success")
             return redirect(url_for(
                 "comment_list",
                 ticket_id=ticket_id
@@ -59,6 +60,8 @@ def comment_list(
 ):
     """Lister tous les commentaires d'un ticket"""
 
+    flaskform = FlaskForm()
+
     comments = comment_service.find_all_by(ticket_id=ticket_id)
 
     if comments is None:
@@ -68,7 +71,8 @@ def comment_list(
     return render_template(
         'comments/list.html',
         ticket_id=ticket_id,
-        comments=comments
+        comments=comments,
+        form=flaskform
     )
 
 
@@ -86,7 +90,7 @@ def comment_edit(
 
     if comment is None:
         app.logger.error(f"Error | comment find one impossible")
-        flash("Impossible de trouver le commentaire.")
+        flash("Impossible de trouver le commentaire.", "error")
         return redirect(url_for(
             "comment_list",
             ticket_id=ticket_id
@@ -95,11 +99,11 @@ def comment_edit(
     current_user = auth_service.get_current_user()
 
     if current_user is None:
-        flash("Vous devez être connecté.")
+        flash("Vous devez être connecté.", "error")
         return redirect(url_for("login"))
 
     if current_user.user_id != comment.author_id:
-        flash("Vous n'êtes pas autorisé à modifier ce commentaire")
+        flash("Vous n'êtes pas autorisé à modifier ce commentaire", "warning")
         return redirect(url_for(
             "comment_list",
             ticket_id=ticket_id
@@ -119,9 +123,9 @@ def comment_edit(
 
         if update_comment is None:
             app.logger.error(f"Error | comment update impossible: {comment_id}")
-            flash("Impossible de mettre à jour le commentaire.")
+            flash("Impossible de mettre à jour le commentaire.", "error")
         else:
-            flash("Commentaire mis à jour avec succès.")
+            flash("Commentaire mis à jour avec succès.", "success")
             return redirect(url_for(
                 "comment_list",
                 ticket_id=ticket_id
@@ -149,7 +153,7 @@ def comment_delete(
 
     if comment is None:
         app.logger.error(f"Error | comment find one impossible")
-        flash("Impossible de trouver le commentaire")
+        flash("Impossible de trouver le commentaire", "error")
         return redirect(url_for(
             "comment_list",
             ticket_id=ticket_id
@@ -158,14 +162,14 @@ def comment_delete(
     current_user = auth_service.get_current_user()
 
     if current_user is None:
-        flash("Vous devez être connecté.")
+        flash("Vous devez être connecté.", "error")
         return redirect(url_for("login"))
 
     is_author = current_user.user_id == comment.author_id
     is_admin = "admin" in current_user.roles
 
-    if not is_author or not is_admin:
-        flash("Vous n'êtes pas autorisé à supprimer ce commentaire")
+    if not (is_author or is_admin):
+        flash("Vous n'êtes pas autorisé à supprimer ce commentaire", "warning")
         return redirect(url_for(
             "comment_list",
             ticket_id=ticket_id
@@ -175,12 +179,12 @@ def comment_delete(
 
     if deleted is None:
         app.logger.error(f"Error | comment delete impossible : {comment_id}")
-        flash("Impossible de supprimer le commentaire")
+        flash("Impossible de supprimer le commentaire", "error")
         return redirect(url_for(
             "comment_list",
             ticket_id=ticket_id
         ))
 
-    flash("Commentaire supprimé avec succès.")
+    flash("Commentaire supprimé avec succès.", "success")
 
-    return redirect(url_for("ticket_detail", ticket_id=ticket_id))
+    return redirect(url_for("comment_list", ticket_id=ticket_id))
