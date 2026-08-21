@@ -1,12 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectMultipleField
 from wtforms.widgets import CheckboxInput, ListWidget
-from app.forms.validators import (
-    DATA_REQUIRED_MSG,
-    TEXT_VALIDATORS,
-    TEXT_AREA_VALIDATORS,
-    DataRequired,
-)
+from app.forms.validators import TEXT_VALIDATORS, TEXT_AREA_VALIDATORS, Length
 
 
 class SelectMultipleCheckboxesField(SelectMultipleField):
@@ -20,7 +15,8 @@ class TeamCreationForm(FlaskForm):
     members = SelectMultipleCheckboxesField(
         "Choisissez les membres de l'équipe",
         validators=[
-            DataRequired(message=DATA_REQUIRED_MSG),
+            Length(min=1, message="Choississez au moins un technicien"),
         ],
+        coerce=int,
         choices=[],
     )

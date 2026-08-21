@@ -3,6 +3,8 @@ services:
     image: python:3.13.14-trixie
     command: "bash -c 'pip install -r requirements.txt && python main.py'"
     working_dir: /app
+    environment:
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./:/app
     ports:

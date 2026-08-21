@@ -1,4 +1,4 @@
-from flask import redirect, render_template
+from flask import redirect, render_template, request
 
 from app import app
 from app.framework.decorators.inject import inject
@@ -34,6 +34,9 @@ def login(user_service: UserService, auth_service: AbstractAuthService):
         user = user_service.login(form)
         if user is not None:
             auth_service.login(user)
+            dest = request.args.get("next")
+            if dest is not None and dest.startswith("/") and not dest.startswith("//"):
+                return redirect(dest)
             return redirect("/dashboard")
         else:
             error = "Identifiant ou mot de passe incorrect"

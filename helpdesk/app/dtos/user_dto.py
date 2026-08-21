@@ -10,6 +10,8 @@ class UserDTO(AbstractDTO):
         self.email = None
         self.firstname = None
         self.lastname = None
+        self.team_id = None
+        self.site_id = None
         self.roles = []
 
     @staticmethod
@@ -20,6 +22,8 @@ class UserDTO(AbstractDTO):
         user_dto.email = user.email
         user_dto.firstname = user.firstname
         user_dto.lastname = user.lastname
+        user_dto.team_id = user.team_id
+        user_dto.site_id = user.site_id
         user_dto.roles = [RoleDTO.build_from_entity(ur.rel_role) for ur in user.roles]
         return user_dto
 
