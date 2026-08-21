@@ -23,7 +23,7 @@ class TicketService(AbstractService):
             # Set current user as author
             current_user = auth_service.get_current_user()
             if current_user is None:
-                flash("Vous devez être connecté pour créer un ticket")
+                flash("Vous devez être connecté pour créer un ticket", "warning")
                 app.logger.error("Utilisateur non connecté lors de la création d'un ticket")
                 return None
 
