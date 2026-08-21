@@ -23,15 +23,15 @@ from app.models.equipment import Equipment
 @app.route("/tickets/create", methods=["GET", "POST"])
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
-def create_ticket():
+@inject
+def create_ticket(
+    category_service: CategoryService,
+    priority_service: PriorityService,
+    ticket_service: TicketService
+):
     # ! For Direct Url API Testing (PostMan)
     # form = TicketForm(meta={"csrf": False})
     form = TicketForm()
-
-    # Load options from db for categories, priorities
-    # and equipment into forms (temporary bypass for equipments)
-    category_service = CategoryService()
-    priority_service = PriorityService()
 
     # Note for later:
     # WTForms except to recieve (value stored in db, value displayed in html for user)
@@ -49,7 +49,7 @@ def create_ticket():
 
 
     if form.validate_on_submit():
-        TicketService().insert(form)
+        ticket_service.insert(form)
         return "SUCCESS", 201
     # ! For Direct Url API Testing (PostMan)
     # return f"VALIDATION ERROR: {form.errors}", 400 
@@ -58,8 +58,11 @@ def create_ticket():
 @app.route("/tickets", methods=["POST","GET"])
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
-def display_all_tickets():
-    tickets = TicketService().find_all()
+@inject
+def display_all_tickets(
+    ticket_service: TicketService
+):
+    tickets = ticket_service.find_all()
     return render_template("tickets/display_all.html", tickets=tickets)  
 
 

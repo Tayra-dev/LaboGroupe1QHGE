@@ -1,3 +1,4 @@
+from app.framework.decorators.injectable import injectable
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, db
 from app.framework.service.abstract_service import AbstractService
@@ -6,6 +7,7 @@ from app.forms.priorities.priority_form import PriorityForm
 from app.mappers.priority_mapper import PriorityMapper
 from app.models.priority import Priority
 
+@injectable
 class PriorityService(AbstractService):
     def insert(self, form: PriorityForm) -> PriorityDTO | None:
         try:
