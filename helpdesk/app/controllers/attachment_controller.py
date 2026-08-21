@@ -1,5 +1,6 @@
 from app import app
 from flask import flash, redirect, url_for, render_template
+from flask_wtf import FlaskForm
 from app.framework.decorators.inject import inject
 from app.services.attachment_service import AttachmentService
 from app.forms.attachment_form import AttachmentForm
@@ -43,3 +44,16 @@ def attachment_create(
         form= form,
         ticket_id= ticket_id
     )
+
+@app.route('/tickets/<ticket_id>/attachments', methods=['GET'])
+@inject
+def attachment_list(
+    ticket_id: int,
+    attachment_service: AttachmentService,
+):
+    """Liste toutes les pièces jointes d'un ticket"""
+
+    flaskform = FlaskForm()
+
+    attachements = attachment_service.find_all_by(ticket_id=ticket_id)
+    # Ajouter le service pour find_all_by 
