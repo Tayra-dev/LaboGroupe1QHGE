@@ -66,7 +66,7 @@
 					class="flex gap-2 items-center p-3 bg-indigo-100 rounded-lg border border-indigo-200 hover:cursor-pointer shadow-xs">
 					<div
 						class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center text-center">
-						<span class="w-full">{{current_user.firstname[0]}}{{current_user.lastname[0]}}</span>
+						<span class="w-full">{{current_user.firstname[0].capitalize() + "" + current_user.lastname[0].capitalize()}}</span>
 					</div>
 					<div class="flex flex-col">
 						<span class="text-sm font-bold text-indigo-900">{{current_user.firstname}}
