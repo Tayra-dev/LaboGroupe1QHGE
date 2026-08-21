@@ -58,7 +58,10 @@ class TicketService(AbstractService):
         return [TicketMapper.entity_to_dto(t) for t in tickets]
 
     def find_one(self, entity_id: int):
-        pass
+        ticket = Ticket.query.get(entity_id)
+        if ticket is None:
+            return None
+        return TicketMapper.entity_to_dto(ticket)
 
     def find_one_by(self, **kwargs):
         pass
