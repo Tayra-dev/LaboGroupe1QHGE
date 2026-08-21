@@ -1,12 +1,11 @@
 from app import app
 from flask import flash, redirect, url_for, render_template, request
 from flask_wtf import FlaskForm
-
-# from app.framework.decorators.auth_required import auth_required
 from app.services.comment_service import CommentService
 from app.framework.service.abstract_auth_service import AbstractAuthService
 from app.forms.comment_form import CommentForm
 from app.framework.decorators.inject import inject
+from app.services.user_service import UserService
 
 @app.route('/tickets/<ticket_id>/comments/create', methods=['GET', 'POST'])
 @inject
@@ -57,6 +56,7 @@ def comment_create(
 def comment_list(
     ticket_id: int,
     comment_service: CommentService,
+    user_service: UserService
 ):
     """Lister tous les commentaires d'un ticket"""
 
@@ -68,11 +68,18 @@ def comment_list(
         app.logger.error(f"Error | comment list impossible")
         comments = []
 
+    users = user_service.find_all()
+
+    authors_map = {
+        user.user_id: f"{user.firstname} {user.name}" for user in users
+    }
+
     return render_template(
         'comments/list.html',
         ticket_id=ticket_id,
         comments=comments,
-        form=flaskform
+        form=flaskform,
+        authors_map= authors_map
     )
 
 

@@ -35,13 +35,18 @@
 
                                     <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                         <span class="text-indigo-700 font-semibold">
-                                            {{ comment.author_id }}
+                                            {{ authors_map[comment.author_id][0] if comment.author_id in authors_map else "?" }}
                                         </span>
                                     </div>
 
                                     <div>
                                         <p class="font-semibold text-gray-900">
-                                            Auteur #{{ comment.author_id }}
+                                            {% if comment.author_id in authors_map %}
+                                                {{ authors_map[comment.author_id] }}
+                                            {% else %}
+                                                Auteur #{{ authors_map[comment.author_id] }}
+                                            {% endif %}
+                                            
                                         </p>
 
                                         {% if comment.created_at %}
