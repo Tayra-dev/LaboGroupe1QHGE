@@ -12,7 +12,8 @@ from app.services.team_service import TeamService
 @auth_required(role_name="ADMIN")
 @inject
 def team_list(team_service: TeamService):
-    pass
+    teams = team_service.find_all()
+    return render_template("teams/list.html", teams=teams)
 
 
 @app.route("/teams/add", methods=["GET", "POST"])
