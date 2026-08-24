@@ -19,10 +19,16 @@ class Site(BaseEntity, db.Model):
     equipments = db.relationship("Equipment", back_populates="site")
 
     def add_user(self, user: User):
-        if user.name in self.user_names():
+        if user.user_id in self.user_ids():
             return
 
         self.users.append(user)
+
+    def remove_user(self, user: User):
+        if user.user_id not in self.user_ids():
+            return
+
+        self.users.remove(user)
 
     def add_equipment(self, equipment: Equipment):
         if equipment.serial in self.equipment_serials():
@@ -32,6 +38,9 @@ class Site(BaseEntity, db.Model):
 
     def user_names(self) -> list[str]:
         return [user.name for user in self.users]
+
+    def user_ids(self) -> list[int]:
+        return [user.user_id for user in self.users]
 
     def equipment_serials(self) -> list[str]:
         return [equipment.serial for equipment in self.equipments]

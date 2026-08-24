@@ -1,29 +1,51 @@
 {% extends "layout/main_layout.html" %}
 {% from "macros/_form_macros.html" import input_field %}
 {% block content %}
-    {#
-        Un seul template pour la création ET la modification: la seule différence
-        est l'URL de destination du formulaire. `item is none` (le test Jinja
-        `is none`) distingue les deux cas.
-        `~` est l'opérateur de concaténation de chaînes en Jinja.
-    #}
-    <h1 class="h3 mb-4">
-        {{ 'Nouveau site' if site is none else 'Modifier « ' ~ site.name ~ ' »' }}
-    </h1>
-
-    <div class="row">
-        <div class="col-md-6">
-            <form method="post"
-                  action="{{ url_for('site_create') if site is none else url_for('site_update', site_id=site.site_id) }}">
-                {{ form.hidden_tag() }}
-
-                {{ input_field(form.name) }}
-                {{ input_field(form.address) }}
-                {{ input_field(form.city) }}
-
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-                <a class="btn btn-link" href="{{ url_for('site_list') }}">Annuler</a>
-            </form>
-        </div>
-    </div>
+<section class="bg-white flex flex-col grow">
+	<div class="px-8 py-6">
+		<a href="{{ url_for('site_list') }}"
+			class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">
+			← Tous les sites
+		</a>
+		<h1 class="text-4xl mt-3">
+			{{ 'Nouveau site' if site is none else 'Modifier « ' ~ site.name ~ ' »' }}
+		</h1>
+	</div>
+	<div class="flex items-center mx-auto my-8 w-full">
+		<div class="mx-auto w-5/6 xl:w-3/4 px-8 py-8 bg-gray-100 rounded-md shadow-xl">
+			<div>
+				<h2 class="text-2xl font-semibold text-gray-800">
+					Informations du site
+				</h2>
+				<hr class="mt-2 text-gray-300">
+				<div class="mt-6 bg-white rounded-md shadow p-6">
+					<form
+						method="post"
+						action="{{ url_for('site_create') if site is none else url_for('site_update', site_id=site.site_id) }}"
+						class="space-y-6"
+					>
+						{{ form.hidden_tag() }}
+						{{ input_field(form.name) }}
+						{{ input_field(form.address) }}
+						{{ input_field(form.city) }}
+						<div class="pt-4 border-t border-gray-200 flex items-center justify-end gap-3">
+							<a
+								href="{{ url_for('site_list') }}"
+								class="rounded-md px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+							>
+								Annuler
+							</a>
+							<button
+								type="submit"
+								class="rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+							>
+								{{ 'Créer le site' if site is none else 'Enregistrer les modifications' }}
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
 {% endblock %}

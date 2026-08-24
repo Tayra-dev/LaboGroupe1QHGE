@@ -5,6 +5,7 @@ from app.models.site import Site
 from app.forms.sites.site_form import SiteForm
 from app.framework.service.abstract_service import AbstractService
 from app.framework.decorators.injectable import injectable
+from app.models.user import User
 
 @injectable
 class SiteService(AbstractService):
@@ -72,3 +73,41 @@ class SiteService(AbstractService):
             return None
 
         return entity_id
+
+    def assign_user(self, user: User, site_id: int):
+        site = self.find_one_entity(site_id)
+
+        if user is None or site is None:
+            return None
+
+        if any(site_user.user_id == user.user_id for site_user in site.users):
+            return None
+
+        try:
+            site.add_user(user)
+            db.session.commit()
+        except Exception as e:
+            app.logger.error(f"Assign {user.name} to {site.name}: {e}")
+            db.session.rollback()
+            return None
+
+        return site_id
+
+    def remove_user(self, user: User, site_id: int):
+        site = self.find_one_entity(site_id)
+
+        if user is None or site is None:
+            return None
+
+        if not any(site_user.user_id == user.user_id for site_user in site.users):
+            return None
+
+        try:
+            site.remove_user(user)
+            db.session.commit()
+        except Exception as e:
+            app.logger.error(f"Remove {user.name} from {site.name}: {e}")
+            db.session.rollback()
+            return None
+
+        return site_id
