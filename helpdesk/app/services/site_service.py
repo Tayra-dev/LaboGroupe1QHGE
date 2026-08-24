@@ -2,10 +2,11 @@ from app import app, db
 from app.dtos.site_dto import SiteDTO
 from app.mappers.site_mapper import SiteMapper
 from app.models.site import Site
+from app.models.user import User
+from app.models.equipment import Equipment
 from app.forms.sites.site_form import SiteForm
 from app.framework.service.abstract_service import AbstractService
 from app.framework.decorators.injectable import injectable
-from app.models.user import User
 
 @injectable
 class SiteService(AbstractService):
@@ -107,6 +108,25 @@ class SiteService(AbstractService):
             db.session.commit()
         except Exception as e:
             app.logger.error(f"Remove {user.name} from {site.name}: {e}")
+            db.session.rollback()
+            return None
+
+        return site_id
+
+    def assign_equipment(self, equipment: Equipment, site_id: int):
+        site = self.find_one_entity(site_id)
+
+        if equipment is None or site is None:
+            return None
+
+        if any(site_equipment.equipment_id == equipment.equipment_id for site_equipment in site.equipments):
+            return None
+
+        try:
+            site.add_equipment(equipment)
+            db.session.commit()
+        except Exception as e:
+            app.logger.error(f"Assign {equipment.name} to {site.name}: {e}")
             db.session.rollback()
             return None
 

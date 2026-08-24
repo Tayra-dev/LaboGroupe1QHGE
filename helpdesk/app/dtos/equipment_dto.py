@@ -1,7 +1,7 @@
 from app.framework.dto import AbstractDTO
 from app.dtos.user_dto import UserDTO
 from app.dtos.site_summary_dto import SiteSummaryDTO
-from models.equipment import Equipment
+from app.models.equipment import Equipment
 
 
 class EquipmentDTO(AbstractDTO):

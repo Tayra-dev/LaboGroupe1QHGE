@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, redirect, url_for, flash, request
 from app.services.site_service import SiteService
 from app.services.user_service import UserService
+from app.services.equipment_service import EquipmentService
 from app.forms.sites.site_form import SiteForm
 from app.framework.decorators.inject import inject
 
@@ -50,14 +51,14 @@ def site_update(site_id: int, site_service: SiteService):
 
 @app.get('/sites/<int:site_id>')
 @inject
-def site_details(site_id: int, site_service: SiteService, user_service: UserService):
+def site_details(site_id: int, site_service: SiteService, user_service: UserService, equipment_service: EquipmentService):
     site = site_service.find_one(site_id)
 
     if site is None:
         flash("Site introuvable.", "warning")
         return redirect(url_for('site_list'))
 
-    return render_template('sites/details.html', site=site, users=user_service.find_all())
+    return render_template('sites/details.html', site=site, users=user_service.find_all(), equipments=equipment_service.find_all())
 
 @app.post('/sites/<int:site_id>')
 @inject
@@ -112,3 +113,25 @@ def site_remove_user(site_id: int, site_service: SiteService, user_service: User
         flash("Utilisateur retiré.", "success")
     
     return redirect(url_for('site_details', site_id=site_id) + '#users')
+
+@app.post('/sites/<int:site_id>/add-equipment')
+@inject
+def site_assign_equipment(site_id: int, site_service: SiteService, equipment_service: EquipmentService):
+    equipment_id = request.form.get('equipment_id', type=int)
+
+    if equipment_id is None:
+        flash("Equipement invalide", "error")
+        return redirect(url_for('site_details', site_id=site_id))
+
+    equipment = equipment_service.find_one_entity(equipment_id)
+
+    if equipment is None:
+        flash("Equipement invalide", "error")
+        return redirect(url_for('site_details', site_id=site_id))
+
+    if site_service.assign_equipment(equipment, site_id) is None:
+        flash("Assignement impossible.", "error")
+    else:
+        flash("Equipement assigné.", "success")
+
+    return redirect(url_for('site_details', site_id=site_id) + '#equipment')
