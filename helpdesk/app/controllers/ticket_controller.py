@@ -1,4 +1,5 @@
 from app.services.user_service import UserService
+from app.framework.decorators.auth_required import auth_required
 from app.framework.service import AbstractAuthService
 from flask import url_for
 from app.forms.users import user_login_form
@@ -60,6 +61,7 @@ def create_ticket(
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
 @inject
+@auth_required("TECHNICIAN")
 def display_all_tickets(
     ticket_service: TicketService
 ):
@@ -70,6 +72,7 @@ def display_all_tickets(
 # Display tickets of currently connected user
 @app.route("/tickets/user", methods=["POST", "GET"])
 @inject
+@auth_required()
 def display_user_tickets(
     auth_service: AbstractAuthService,
     ticket_service: TicketService
@@ -89,18 +92,19 @@ def display_user_tickets(
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
 @inject
+@auth_required() #should be owner of the ticket or any technician ?
 def ticket_detail(
     ticket_service: TicketService,
     user_service: UserService,
     ticket_id: int
 ):
-    print(ticket_id)
     ticket = ticket_service.find_one(ticket_id)
-
-    author_id = ticket.ticket_author_id
-    author = user_service.find_one(author_id)
 
     if ticket is None:
         flash("Ticket not found", "warning")
         return redirect(url_for("display_all_tickets"))
+
+    author_id = ticket.ticket_author_id
+    author = user_service.find_one(author_id)
+
     return render_template("tickets/detail.html", ticket=ticket, author=author) 
