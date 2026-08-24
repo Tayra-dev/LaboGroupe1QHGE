@@ -20,5 +20,24 @@ class Equipment(BaseEntity, db.Model):
     user = db.relationship("User", back_populates="equipments")
     ticket = db.relationship("Ticket", back_populates="equipment")
 
+
+    def add_user(self, user):
+            if user.user_id == self.user_id or self.user_id is not None:
+                return
+    
+            self.user = user
+    
+    def remove_user(self, user):
+        if user.user_id != self.user_id:
+            return
+
+        self.user = None
+
+    def add_site(self, site):
+        if site.site_id == self.site_id or self.site_id is not None:
+            return 
+
+        self.site = site
+
     def __repr__(self):
         return f"<Equipment {self.equipment_id}: {self.name}>"

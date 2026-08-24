@@ -91,3 +91,14 @@ PRIORITIES = [
 SITES = [
         ("Technobel", "Place de l'univeristé, 15", "Louvain-La-Neuve", ["admin", "test"] , [])
     ]
+
+EQUIPMENT = [
+        (
+            "Hammer",
+            "Tool",
+            "049383293930",
+            "2025-03-15",
+            "Technobel",
+            "admin"
+        )
+    ]

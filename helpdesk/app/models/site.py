@@ -1,7 +1,5 @@
 from app import db
 from app.models.base_entity import BaseEntity
-from app.models.equipment import Equipment
-from app.models.user import User
 
 
 class Site(BaseEntity, db.Model):
@@ -18,26 +16,23 @@ class Site(BaseEntity, db.Model):
     users = db.relationship("User", back_populates="site")
     equipments = db.relationship("Equipment", back_populates="site")
 
-    def add_user(self, user: User):
+    def add_user(self, user):
         if user.user_id in self.user_ids():
             return
 
         self.users.append(user)
 
-    def remove_user(self, user: User):
+    def remove_user(self, user):
         if user.user_id not in self.user_ids():
             return
 
         self.users.remove(user)
 
-    def add_equipment(self, equipment: Equipment):
+    def add_equipment(self, equipment):
         if equipment.serial in self.equipment_serials():
             return 
 
         self.equipments.append(equipment)
-
-    def user_names(self) -> list[str]:
-        return [user.name for user in self.users]
 
     def user_ids(self) -> list[int]:
         return [user.user_id for user in self.users]
