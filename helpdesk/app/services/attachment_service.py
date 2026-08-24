@@ -1,10 +1,11 @@
+import os, uuid
 from app.framework.service.abstract_service import AbstractService
 from app import app, db
 from app.models.attachment import Attachment
 from app.mappers.attachment_mapper import AttachmentMapper
 from app.framework.decorators.injectable import injectable
-import os
 from flask import current_app
+from werkzeug.utils import secure_filename
 
 @injectable
 class AttachmentService(AbstractService):
@@ -18,7 +19,23 @@ class AttachmentService(AbstractService):
             return [AttachmentMapper.entity_to_dto(attachment) for attachment in attachments]
 
         except Exception as e:
-            app.logger.error(f"Error |find all attachment : {e}")   
+            app.logger.error(f"Error |find all attachment : {e}")
+            return None
+
+    def find_all_by(self, **kwargs):
+        """Toutes les pièces jointes selon un critère."""
+
+        try:
+            attachments = Attachment.query.filter_by(**kwargs).all()
+
+            if attachments is None:
+                return None
+
+            return [AttachmentMapper.entity_to_dto(attachment) for attachment in attachments]
+
+        except Exception as e:
+            app.logger.error(f" Error | find all by attachment : {e} ")
+            return None    
 
     def find_one_entity(self, entity_id: int):
         """Une pièce jointe par sa clé primaire, ou None.""" 
@@ -66,6 +83,9 @@ class AttachmentService(AbstractService):
 
     def insert(self, data):
         """Crée une pièce jointe à partir d'un formulaire validé."""
+
+        absolute_path = None 
+        
         try:
             form= data['form']
             author_id = data['author_id']
@@ -76,15 +96,23 @@ class AttachmentService(AbstractService):
             if not file_data:
                 return None
 
-            filename = file_data.filename
+            original_filename = secure_filename(file_data.filename)
 
-            relative_path = os.path.join("uploads", "attachments", filename)
+            extension =  os.path.splitext(original_filename)[1]
+
+            stored_filename= f"{uuid.uuid4()}{extension}"
+
+            relative_path = os.path.join("uploads", "attachments", stored_filename)
 
             upload_folder = os.path.join(current_app.root_path, "uploads", "attachments")
+
             os.makedirs(upload_folder, exist_ok=True)
 
-            absolute_path = os.path.join(upload_folder, filename)
+            absolute_path = os.path.join(upload_folder, stored_filename)
+
             file_data.save(absolute_path)
+
+            file_size = os.path.getsize(absolute_path)
 
             attachment = Attachment()
 
@@ -93,7 +121,9 @@ class AttachmentService(AbstractService):
                 attachment,
                 author_id,
                 ticket_id,
-                relative_path 
+                original_filename,
+                relative_path,
+                file_size 
             )
 
             db.session.add(attachment)
@@ -104,6 +134,10 @@ class AttachmentService(AbstractService):
         except Exception as e:
             app.logger.error(f"Error | insert attachement: {e}")
             db.session.rollback()
+
+            if absolute_path and os.path.exists(absolute_path):
+                os.remove(absolute_path)
+
             return None  
 
     def update(self, entity_id: int, data):
@@ -137,6 +171,11 @@ class AttachmentService(AbstractService):
 
             if attachment is None:
                 return None
+
+            absolute_path = os.path.join(current_app.root_path, attachment.attachment_path)
+
+            if os.path.exists(absolute_path):
+                os.remove(absolute_path)
 
             db.session.delete(attachment)
             db.session.commit()

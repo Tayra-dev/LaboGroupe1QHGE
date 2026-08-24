@@ -1,14 +1,8 @@
 {% from "macros/_form_macros.html" import input_field with context %}
 
-{% extends "layout/main_layout.html" %}
-
 {% block content %}
 
 <section class="bg-white flex flex-col grow">
-
-    <h1 class="px-8 py-6 text-4xl">
-        Pièce jointe
-    </h1>
 
     <div class="flex items-center mx-auto my-8 w-full">
 
@@ -23,7 +17,7 @@
             </div>
 
             <!-- MODIFICATION : Ajout de enctype pour autoriser le téléversement de fichiers -->
-            <form method="post" enctype="multipart/form-data" class="flex flex-col">
+            <form method="POST" action="{{ url_for('attachment_create', ticket_id=ticket_id) }}" enctype="multipart/form-data" class="flex flex-col">
 
                 {{ form.hidden_tag() }}
 
@@ -48,6 +42,7 @@
                     class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded inline-flex items-center w-fit mx-auto my-6"
                 >
                     <span>Téléverser le fichier</span>
+
                 </button>
 
             </form>

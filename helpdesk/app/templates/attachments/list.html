@@ -2,9 +2,8 @@
 
 {% block content %}
 
-{% endblock %}
-
-<setion class="bg-white flex flex-col grow">
+<!-- Correction de la balise <section> qui était écrite <setion> -->
+<section class="bg-white flex flex-col grow">
 
     <h1 class="px-8 py-6 text-4xl">
         Pièces jointes
@@ -15,97 +14,76 @@
             
             <div>
                 <h2 class="text-2xl font-semibold">
-                    Pièces jointes du ticket #{{ ticket_id}}
+                    Pièces jointes du ticket #{{ ticket_id }}
                 </h2>
 
                 <hr class="mt-2 text-gray-300">
             </div>
 
             <!-- Liste des pièces jointes existantes-->
-             <div class="flex flex-col gap-5 mt-6">
+            <div class="flex flex-col gap-5 mt-6">
 
-                {% if attachments %}
+               {% if attachments %}
 
-                    {% for attachment in attachments %}
-                        <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                            
-                            <div class="mt-5 flex">
-                                
-                                <p class="text-gray-700 whitespace-pre-line leading-relaxed">
-                                    {{ attachment.attachment_filename}}
-                                </p>
-                                
-                                <p class="px-4 text-gray-400">
-                                    Taille: {{attachment.attachment_size}}
-                                </p>
-                                
-                                <!-- Lien de modification-->
-                                <a href="{{ url_for('attachment_edit', ticker_id=ticket_id, attachment_id=attachment.attachment_id)}}"
-                                class="text-green-500 hover:text-green-700 text-sm font-medium focus:outline-none">
-                                    Modifier
-                                </a>
+                   {% for attachment in attachments %}
 
-                                <span>|</span>
-                                
-                                <!-- Formulaire de suppression -->
-                                <form action="{{ url_for('attachment_delete', ticket_id=ticket_id, attachment_id=attachment.attachement_id)}}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette pièce jointe ?');">
-                                    {{ form.hidden_tag() }}
+                       <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                           
+                           <!-- Conteneur principal parfaitement aligné verticalement -->
+                           <div class="flex flex-row items-center gap-4">
+                               
+                               <!-- Ajout de 'truncate' et max-w pour éviter que les longs noms n'écrasent les boutons -->
+                               <p class="text-gray-700 font-medium truncate max-w-[200px] sm:max-w-xs" title="{{ attachment.attachment_filename }}">
+                                   {{ attachment.attachment_filename }}
+                               </p>
+                               
+                               <!-- Suppression de px-4 inutile car géré par gap-4 -->
+                               <p class="text-gray-400 text-sm whitespace-nowrap">
+                                   Taille: {{ ((attachment.attachment_size | int) / (1024*1024) ) | round(2) }} Mo
+                               </p>
+                               
+                               <!-- ml-auto pousse tout ce bloc vers l'extrême droite -->
+                               <div class="ml-auto flex flex-row items-center gap-4">
+                                    
+                                    <!-- Formulaire de suppression (Correction des syntaxes HTML cassées) -->           
+                                    <form action="{{ url_for('attachment_delete', ticket_id=ticket_id, attachment_id=attachment.attachment_id) }}" 
+                                          method="POST" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette pièce jointe ?');"
+                                          class="flex items-center">
 
-                                    <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-medium focus:outline-none">
-                                        Supprimer
-                                    </button>
+                                        {{ form.hidden_tag() }}          
+                                        
+                                        <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-medium focus:outline-none">
+                                            Supprimer
+                                        </button>            
+                                    </form> 
+                               </div>
+                               
+                           </div>
 
-                                </form>
+                       </article>
 
+                   {% endfor %}
 
+                {% else %}
 
-                            </div>
-
-                        </article>
-                    {% endfor %}
-
-                {% endif %}
-
-             </div>
-
-             <!-- Formulaire pour ajouter une nouvelle pièce jointe-->
-              <div class="mt-8 pt-6 border-t border-gray-300">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                    Ajouter une pièce jointe
-                </h3>
-
-                <form method="post" enctype="multipart/form-data" class="flex flex-col">
-
-                    {{ form.hidden_tag() }}
-
-                    <div class="p-6">
-                        <label
-                            for="{{form.attachment.id}}"
-                            class="block mb-2 font-medium text-gray-700"
-                        >Sélectionnez un fichier</label>
-
-                        {{ form.attachment(
-                            class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-white focus:outline-none",
-                            accept=".pdf,.png,.jpg,.jpeg"
-                        )}}
-
-                        {% if form.attachment.errors %}
-                            <div class="mt-2 text-sm text-red-600"> {% for error in form.attachment.errors %} <p>{{ error }}</p> {% endfor %} </div>
-                        {% endif %}
+                    <div class="bg-white rounded-lg border border-gray-200 p-8 text-center">
+                        <p class="text-gray-500">
+                            Aucune pièce jointe pour ce ticket.
+                        </p>
                     </div>
 
-                    <button
-                        type="submit"
-                        class="bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-4 rounded inline-flex items-center w-fit mx-auto my-6"
-                    >
-                        <span>Téléverser le fichier</span>
-                    </button>
+               {% endif %}
 
-                </form>
+            </div>
 
-              </div>
+            <!-- Formulaire pour ajouter une nouvelle pièce jointe-->
+            {% include "attachments/create.html" %}
+             
         </div>
 
     </div>
 
-</setion>
+</section>
+
+{% endblock %}
