@@ -12,18 +12,12 @@ class AttachmentMapper(AbstractMapper):
         return AttachmentDTO.build_from_entity(attachment)
 
     @staticmethod
-    def form_to_entity(form, attachment: Attachment, author_id: int, ticket_id: int, attachment_path: str) -> Attachment:
+    def form_to_entity(form, attachment: Attachment, author_id: int, ticket_id: int, attachment_filename: str, attachment_path: str, attachment_size: int) -> Attachment:
         if isinstance(form, AttachmentForm):
-            file_data = form.attachment.data
 
-            if file_data:
-                attachment.attachment_filename = file_data.filename 
+                attachment.attachment_filename = attachment_filename
                 attachment.attachment_path = attachment_path
-
-                file_data.seek(0, os.SEEK_END)
-                attachment.attachment_size = file_data.tell()
-                file_data.seek(0)
-
+                attachment.attachment_size = attachment_size
                 attachment.ticket_id = ticket_id
                 attachment.author_id = author_id
 
