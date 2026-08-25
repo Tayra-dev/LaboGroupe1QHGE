@@ -17,6 +17,7 @@ from app.forms.tickets.ticket_form import TicketForm
 from app.services.ticket_service import TicketService
 from app.services.category_service import CategoryService
 from app.services.priority_service import PriorityService
+from flask import request
 
 
 # Temporary import
@@ -83,7 +84,7 @@ def display_user_tickets(
     if current_user is None:
         flash("You must be logged in to display your tickets", "warning")
         return redirect(url_for("login"))
-        
+     
     tickets = ticket_service.find_all_by(author_id=current_user.user_id)
     return render_template("tickets/display_all.html", tickets=tickets)
 
@@ -108,4 +109,43 @@ def ticket_detail(
     author_id = ticket.ticket_author_id
     author = user_service.find_one(author_id)
 
-    return render_template("tickets/detail.html", ticket=ticket, author=author) 
+    return render_template("tickets/detail.html", ticket=ticket, author=author)
+
+@app.route('/tickets/<ticket_id>/update-status', methods=["POST"])
+@inject
+def update_ticket_status(
+    ticket_id: int,
+    auth_service: AbstractAuthService,
+    ticket_service: TicketService
+):
+
+    if not auth_service.is_authenticated():
+        flash("Vous devez être connecté", "error")
+        return redirect(url_for('login'))
+
+    new_status = request.form.get("status")
+
+    allowed_status = [
+        "Open",
+        "In Progress",
+        "Resolved",
+        "Closed"
+        ]
+
+    if new_status not in allowed_status:
+        flash("Status de ticket invalide", "warning")
+        return redirect(url_for('display_user_tickets'))
+
+    current_user = auth_service.get_current_user()
+
+    update_status = ticket_service.update_ticket_status(ticket_id, new_status.lower(), current_user.user_id)
+
+    if update_status is None:
+        flash("Impossible de changer le status du ticket", "errro")
+        return redirect(url_for('display_user_tickets'))
+
+    flash("Le changement de status a été effectué avec succès", "success")
+    print("REDIRECT USER TICKETS")
+    return redirect(url_for('display_user_tickets'))
+
+

@@ -7,10 +7,23 @@
     <h1 class="px-8 py-6 text-4xl">
         Historique de statut
     </h1>
+    <!-- Top Navigation / Breadcrumb -->
+        <div class="flex items-center justify-between">
+            <a href="{{ url_for('ticket_detail', ticket_id=ticket_id) }}"
+                class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span> Retour au ticket #{{ ticket_id }} </span>
+            </a>
+
+            <span class="text-sm font-mono text-gray-400">Ticket #{{ ticket_id }}</span>
+        </div>
 
     <div class="mx-auto my-8 w-full">
         <div class="mx-auto w-2/3 xl:w-1/2 px-12 py-8 bg-gray-100 rounded-md shadow-xl">
-
+            
             <div>
                 <h2 class="text-2xl font-semibold">
                     historique du ticket #{{ ticket_id }}
@@ -34,13 +47,19 @@
 
                                     <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                         <span class="text-indigo-700 font-semibold">
-                                            {{ status_history.user_id }}
+                                            {{ authors_map[status_history.user_id][0] }}
                                         </span>
                                     </div>
 
                                     <div>
                                         <p class="font-semibold text-gray-900">
-                                            Utilisateur #{{ status_history.user_id }}
+                        
+                                            {% if status_history.user_id in authors_map %}
+                                                {{ authors_map[status_history.user_id]}} #{{ status_history.user_id }}
+                                            {% else %}
+                                                Auteur inconnu
+                                            {% endif %}
+
                                         </p>
 
                                         {% if status_history.created_at %}

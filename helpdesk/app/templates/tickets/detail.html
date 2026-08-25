@@ -131,7 +131,7 @@
                             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
                         </path>
                     </svg>
-                    <span>View Comments</span>
+                    <span>View All Comments</span>
                     {% if ticket.ticket_comments %}
                     <span class="bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs font-bold">
                         {{ ticket.ticket_comments|length }}
@@ -164,7 +164,7 @@
             {% if ticket.ticket_status_histories %}
             <div
                 class="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
-                {% for history in ticket.ticket_status_histories %}
+                {% for history in ticket.ticket_status_histories[:5] %}
                 <div class="relative flex items-start gap-4">
                     <div class="absolute -left-6 mt-1 w-3 h-3 rounded-full bg-indigo-600 ring-4 ring-white"></div>
                     <div class="bg-gray-50 rounded-lg p-3 w-full border border-gray-100">
@@ -176,11 +176,19 @@
                         </div>
                     </div>
                 </div>
-                {% endfor %}
+                {% endfor %}            
             </div>
+
             {% else %}
             <p class="text-sm text-gray-400 italic">No status changes recorded yet.</p>
             {% endif %}
+
+            
+            <a href="{{ url_for('get_history_by_ticket', ticket_id=ticket.ticket_id) }}"
+            class="inline-flex items-center gap-2 px-4 py-2 mt-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg text-sm transition-colors shadow-sm">
+            <span>View All Status History</span>
+            </a>
+            
         </div>
 
         <!-- Ticket Attachments Section -->
@@ -198,7 +206,7 @@
 
             {% if ticket.ticket_attachments %}
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {% for attachment in ticket.ticket_attachments %}
+                {% for attachment in ticket.ticket_attachments[:5] %}
                 <div
                     class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200/60 hover:bg-gray-100/80 transition-colors">
                     <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,7 +214,7 @@
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                         </path>
                     </svg>
-                    <span class="text-sm font-medium text-gray-700 truncate">{{ attachment.filename or 'Attachment #' ~
+                    <span class="text-sm font-medium text-gray-700 truncate">{{ attachment.attachment_filename or 'Attachment #' ~
                         attachment.attachment_id }}</span>
                 </div>
                 {% endfor %}
@@ -214,6 +222,12 @@
             {% else %}
             <p class="text-sm text-gray-400 italic">No attachments uploaded for this ticket.</p>
             {% endif %}
+            <div class="mt-6">
+                <a href="{{ url_for('attachment_list', ticket_id=ticket.ticket_id) }}"
+                    class="inline-flex items-center gap-2 px-4 py-2 mt-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg text-sm transition-colors shadow-sm">
+                    <span>View All Attachments</span>
+                </a>
+            </div>
         </div>
 
     </div>
