@@ -47,7 +47,6 @@ def create_team(team_service: TeamService, user_service: UserService, team_id=No
     ]
     if team is not None and not form.is_submitted():
         form.members.data = [member.user_id for member in team.members]
-        app.logger.debug(f"test: {form.members.data}")
 
     members_data = [(subfield, users_by_id[subfield.data]) for subfield in form.members]
 
