@@ -26,6 +26,7 @@ from app.models.equipment import Equipment
 @app.route("/tickets/create", methods=["GET", "POST"])
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
+@auth_required()
 @inject
 def create_ticket(
     category_service: CategoryService,
@@ -61,8 +62,8 @@ def create_ticket(
 @app.route("/tickets", methods=["POST","GET"])
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
+@auth_required("TECHNICIEN")
 @inject
-@auth_required("TECHNICIAN")
 def display_all_tickets(
     ticket_service: TicketService
 ):
