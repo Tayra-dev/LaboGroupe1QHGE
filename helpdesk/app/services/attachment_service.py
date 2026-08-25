@@ -10,6 +10,33 @@ from werkzeug.utils import secure_filename
 @injectable
 class AttachmentService(AbstractService):
 
+    ALLOWED_EXTENSIONS = {
+        "pdf",
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "txt",
+        "doc",
+        "docx",
+        "xls",
+        "xlsx"
+    }
+
+    ALLOWED_MIME_TYPES = {
+        "application/pdf",
+        "image/png",
+        "image/jpeg",
+        "image/gif",
+        "text/plain",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    }
+
+    MAX_FILE_SIZE = 10 * 1024 * 1024 #10MB
+
     def find_all(self):
         """Toutes les pièces jointes (sous forme de DTO)."""
 
@@ -79,7 +106,39 @@ class AttachmentService(AbstractService):
         
         except Exception as e:
             app.logger.error(f"Error |find all attachment : {e}")
-            return None 
+            return None
+
+    def _validate_file(self, file_data):
+        """Valider le fichier avant son enregistrement"""
+
+        if not file_data:
+            return False, "Aucun fichier"
+        if not file_data.filname:
+            return False, "Aucun nom de fichier"
+
+        filename = secure_filename(file_data.filename)
+
+        if not filename:
+            return False, "Nom de fichier invalide"
+
+        extension = os.path.splitext(filename)[1].lower().lstrip(".")
+
+        if extension not in self.ALLOWED_EXTENSIONS:
+            return False, "Type de fichier non autorisé"
+
+        if file_data.mimtype not in self.ALLOWED_MIME_TYPES:
+            return False, "Type MIME non autorisé"
+
+        file_data.stream.seek(0, os.SEEK_END)
+        file_size = file_data.stream.tell()
+        file_data.stream.seek(0)
+
+        if file_size > self.MAX_FILE_SIZE:
+            return False, "Fichier trop volumineux (max 10 MB)"
+        if file_size == 0:
+            return False, "Le fichier est vide"
+
+        return True
 
     def insert(self, data):
         """Crée une pièce jointe à partir d'un formulaire validé."""
@@ -93,26 +152,49 @@ class AttachmentService(AbstractService):
 
             file_data = form.attachment.data
 
-            if not file_data:
+            # Validation de la pièce jointe envoyé via le formulaire
+
+            is_valid, error_message = self._validate_file(file_data)
+
+            if not is_valid:
+                app.logger.error(f"Error | attachment validation error: {error_message}")
                 return None
+
+            # Nom original
 
             original_filename = secure_filename(file_data.filename)
 
             extension =  os.path.splitext(original_filename)[1]
 
+            # Nom de stockage aléatoire
+
             stored_filename= f"{uuid.uuid4()}{extension}"
 
+            # Chemin relatif stocké en DB
+
             relative_path = os.path.join("uploads", "attachments", stored_filename)
+
+            # Dossier privé
 
             upload_folder = os.path.join(current_app.root_path, "uploads", "attachments")
 
             os.makedirs(upload_folder, exist_ok=True)
 
+            # Sauvegarde
+
             absolute_path = os.path.join(upload_folder, stored_filename)
 
             file_data.save(absolute_path)
 
+            # Double vérification de la taille de fichier
+
             file_size = os.path.getsize(absolute_path)
+
+            if file_size > self.MAX_FILE_SIZE:
+                os.remove(absolute_path)
+                return None
+
+            # DB
 
             attachment = Attachment()
 
@@ -138,8 +220,43 @@ class AttachmentService(AbstractService):
             if absolute_path and os.path.exists(absolute_path):
                 os.remove(absolute_path)
 
-            return None  
+            return None
+          
+    def get_file_path(self, entity_id: int):
+        """
+        Retourne le chemin absolu uniquement si la pièce jointe existe en DB
+        et que le fichier existe réellement dans uploads
+        """
 
+        attachement = db.session.get(Attachment, entity_id):
+
+        if attachement is None:
+            return None
+
+        upload_root = os.path.realpath(
+            os.path.join(
+                current_app.root_path,
+                "uploads",
+                "attachments"
+            )
+        )
+
+        file_path = os.path.realpath(
+            os.path.join(
+                current_app.root_path,
+                attachement.attachment_path
+            )
+        )
+
+        if not file_path.startswith(upload_root + os.sep):
+            app.logger.warning(f"Attachment path invalid for attachment {entity_id}")
+            return None
+
+        if not os.path.isfile(file_path):
+            return None
+
+        return file_path
+        
     def update(self, entity_id: int, data):
         """Met à jour une pièce jointe existante."""
 
