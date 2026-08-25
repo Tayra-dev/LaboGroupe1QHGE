@@ -54,12 +54,19 @@
 
                                     <div>
                                         <p class="font-semibold text-gray-900">
+                                            
                                             {% if comment.author_id in authors_map %}
                                                 {{ authors_map[comment.author_id] }}
                                             {% else %}
                                                 Auteur #{{ authors_map[comment.author_id] }}
                                             {% endif %}
-                                            
+                                            {% if comment.updated_at %}
+                                            <p class="text-sm text-gray-500">
+                                                Mis à jour le
+                                                {{ comment.updated_at.strftime('%d/%m/%Y à %H:%M') }}
+                                            </p>
+                                            {% endif %}
+ 
                                         </p>
 
                                         {% if comment.created_at %}
