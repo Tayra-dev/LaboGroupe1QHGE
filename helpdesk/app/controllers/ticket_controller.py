@@ -25,6 +25,7 @@ from app.models.equipment import Equipment
 @app.route("/tickets/create", methods=["GET", "POST"])
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
+@auth_required()
 @inject
 def create_ticket(
     category_service: CategoryService,
@@ -60,8 +61,8 @@ def create_ticket(
 @app.route("/tickets", methods=["POST","GET"])
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
+@auth_required("TECHNICIEN")
 @inject
-@auth_required("TECHNICIAN")
 def display_all_tickets(
     ticket_service: TicketService
 ):
@@ -71,8 +72,8 @@ def display_all_tickets(
 
 # Display tickets of currently connected user
 @app.route("/tickets/user", methods=["POST", "GET"])
-@inject
 @auth_required()
+@inject
 def display_user_tickets(
     auth_service: AbstractAuthService,
     ticket_service: TicketService
@@ -91,8 +92,8 @@ def display_user_tickets(
 @app.route("/tickets/<int:ticket_id>", methods=["GET", "POST"])
 # ! For Direct Url API Testing (PostMan)
 # @csrf.exempt
-@inject
 @auth_required() #should be owner of the ticket or any technician ?
+@inject
 def ticket_detail(
     ticket_service: TicketService,
     user_service: UserService,
