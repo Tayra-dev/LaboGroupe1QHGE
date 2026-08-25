@@ -1,3 +1,5 @@
+import * as Modal from "./modal.js";
+
 const handleShowHidePassword = () => {
     const eyeIcons = document.querySelectorAll(".eye-icon");
     if (!eyeIcons.length) return;
@@ -30,10 +32,20 @@ const handleLogout = () => {
 
 const handleDismissNotification = () => {
     window.onload = () => {
+        const window = document.getElementById("main-container");
+        if (!window) return;
         const notificationContainer = document.getElementById(
             "notification-container",
         );
         if (!notificationContainer) return;
+
+        // Handle click outside the notification
+        window.addEventListener("click", (event) => {
+            if (event.target !== notificationContainer)
+                notificationContainer.remove();
+        });
+
+        // Handle click on delete button
         notificationContainer.addEventListener("click", (event) => {
             const notifDismissBtn = event.target.closest(".dismiss-btn");
             if (!notifDismissBtn) return;
@@ -47,7 +59,8 @@ const handleDismissNotification = () => {
 const handleTableMasterCheckboxes = () => {
     const tables = document.querySelectorAll(".checkbox-table");
     if (!tables.length) return;
-	console.log(tables);
+    // TODO: check all checkboxes when master is checked (and vice versa)
+    console.log(tables);
 };
 
 // Init JS
@@ -57,3 +70,5 @@ handleToggleAvatarDropdown();
 handleLogout();
 handleDismissNotification();
 handleTableMasterCheckboxes();
+Modal.handleOpenModal();
+Modal.handleCloseModal();

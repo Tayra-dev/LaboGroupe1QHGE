@@ -1,4 +1,6 @@
 {% extends "layout/main_layout.html" %}
+{% from "macros/_icon_macros.html" import icon %}
+{% from "macros/_modal_macros.html" import modal %}
 
 {% block content %}
 <section class="bg-gray-50/50 flex flex-col grow py-8 px-4 sm:px-6 lg:px-8">
@@ -9,7 +11,7 @@
 				<h1 class="text-3xl font-bold text-gray-900 tracking-tight">Equipes</h1>
 				<span
 					class="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 border border-indigo-200">
-					{{ teams|length }} total
+					{{ teams|length }}
 				</span>
 			</div>
 			<p class="mt-1 text-sm text-gray-500">Gérer vos équipes.</p>
@@ -17,9 +19,7 @@
 		<div>
 			<a href="{{ url_for('create_team') }}"
 				class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 transition-all duration-150">
-				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-				</svg>
+				{{ icon(type="plus", color="current") }}
 				Créer une équipe
 			</a>
 		</div>
@@ -31,7 +31,7 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			{% for team in teams %}
 			<div
-				class="bg-white rounded-xl border border-gray-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden">
+				class="relative bg-white rounded-xl border border-gray-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden min-h-40">
 				<!-- Card Header & Content -->
 				<div class="p-6">
 
@@ -40,6 +40,11 @@
 						class="text-lg font-semibold text-gray-900 line-clamp-1 group-hover:text-indigo-600 transition-colors">
 						{{ team.name }}
 					</h2>
+
+					<span
+						class="absolute right-3 top-3 inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 border border-indigo-200">{{team.members|length|string
+						}} {{ "membres" if
+						team.members|length > 1 else "membre" }} </span>
 
 					<!-- Team Description -->
 					<p class="mt-2 text-sm text-gray-600 line-clamp-3 leading-relaxed">
@@ -50,25 +55,24 @@
 				<!-- Action Bar: Views -->
 				<div
 					class="px-6 py-3 bg-gray-100/60 border-t border-gray-200/60 flex items-center justify-between gap-2 text-xs">
-					<a href=""
-						class="inline-flex items-center gap-1.5 text-gray-700 hover:text-indigo-600 font-medium transition-colors">
-						<svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-								d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
-							</path>
-						</svg>
-						<span>Voir les membres</span>
+					<div class="gap-2 flex flex-row text-nowrap">
+						<button
+							class="inline-flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-md px-2.5 py-1 font-semibold transition-colors">
+							{{ icon(type="eye", color="indigo-700") }}
+							<span>Voir les membres</span>
+						</button>
 
-					</a>
-
-					<a href="{{ url_for('create_team') }}"
-						class="inline-flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-md px-2.5 py-1 font-semibold transition-colors">
-						<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
-							</path>
-						</svg>
-						<span>Modifier l'équipe</span>
-					</a>
+						<a href="{{ url_for('create_team', team_id=team.team_id) }}"
+							class="inline-flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-md px-2.5 py-1 font-semibold transition-colors">
+							{{ icon(type="edit", color="indigo-700") }}
+							<span>Modifier</span>
+						</a>
+					</div>
+					<button data-confirm-url="{{ url_for('delete_team', team_id=team.team_id) }}"
+						data-confirm-title="Supprimer l'équipe « {{ team.name }} » ?" class="team-delete-btn inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-700 border
+						border-red-200 rounded-md px-2.5 py-1 font-semibold transition-colors cursor-pointer">
+						{{ icon(type="delete", color="red-700") }}
+					</button>
 				</div>
 			</div>
 			{% endfor %}
@@ -78,20 +82,14 @@
 		<div
 			class="text-center py-16 px-4 bg-white rounded-2xl border border-dashed border-gray-300 max-w-md mx-auto my-8">
 			<div class="mx-auto w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center mb-4">
-				<svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-						d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-					</path>
-				</svg>
+				{{ icon(type="empty", color="indigo-600") }}
 			</div>
 			<h3 class="text-base font-semibold text-gray-900">Aucune équipe trouvée</h3>
 			<p class="mt-1 text-sm text-gray-500">Créer votre première équipe.</p>
 			<div class="mt-6">
 				<a href="{{ url_for('create_team') }}"
 					class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-colors">
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-					</svg>
+					{{ icon(type="plus", color="current") }}
 					Créer une équipe
 				</a>
 			</div>
@@ -99,4 +97,8 @@
 		{% endif %}
 	</div>
 </section>
+<!-- Modal -->
+{{modal(title="", subtitle="Cette action désactivera l'équipe et
+libèrera les techniciens qui y sont affectés.", cancel_label="Non, annuler", confirm_label="Oui, supprimer")}}
+
 {% endblock %}

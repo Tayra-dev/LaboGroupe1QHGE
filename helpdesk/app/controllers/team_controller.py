@@ -1,4 +1,4 @@
-from flask import redirect, render_template, flash
+from flask import redirect, render_template, flash, url_for
 
 from app import app
 from app.framework.decorators.inject import inject
@@ -20,26 +20,66 @@ def team_list(team_service: TeamService):
 @app.route("/teams/<int:team_id>/edit", methods=["GET", "POST"])
 @auth_required(role_name="ADMIN")
 @inject
-def create_team(team_service: TeamService, user_service: UserService):
-    form = TeamCreationForm()
+def create_team(team_service: TeamService, user_service: UserService, team_id=None):
+    team = team_service.find_one(team_id) if team_id else None
     users = [
         user
         for user in user_service.find_all()
-        if (user.has_role("TECHNICIEN") and user.team_id is None)
+        if (
+            user.has_role("TECHNICIEN")
+            and (
+                user.team_id is None
+                or (team is not None and user.team_id == team.team_id)
+            )
+        )
     ]
+
     users_by_id = {user.user_id: user for user in users}
+
+    if team_id and team is None:
+        flash("Équipe introuvable.", "warning")
+        return redirect(url_for("team_list"))
+
+    form = TeamCreationForm(obj=team)
 
     form.members.choices = [
         (user.user_id, f"{user.firstname} {user.lastname}") for user in users
     ]
+    if team is not None and not form.is_submitted():
+        form.members.data = [member.user_id for member in team.members]
+        app.logger.debug(f"test: {form.members.data}")
 
     members_data = [(subfield, users_by_id[subfield.data]) for subfield in form.members]
 
     if form.validate_on_submit():
-        app.logger.info(f"form sent successfully: ${form.members.data}")
-        team = team_service.insert(form, user_service)
-        if team is not None:
-            flash("L'équipe {team.name} a été créée correctement.", "success")
+        if team is None:
+            team = team_service.insert(form)
+            if team is not None:
+                flash(f"L'équipe {team.name} a été créée correctement.", "success")
+                return redirect(url_for("team_list"))
+        else:
+            team = team_service.update(team_id, form)
+            if team is not None:
+                flash(f"L'équipe {team.name} a été mse à jour correctement.", "success")
+                return redirect(url_for("team_list"))
     return render_template(
-        "teams/add_or_update.html", form=form, team=None, members_data=members_data
+        "teams/add_or_update.html",
+        form=form,
+        team=team,
+        members_data=members_data,
     )
+
+
+@app.route("/teams/<int:team_id>/delete", methods=["POST"])
+@auth_required(role_name="ADMIN")
+@inject
+def delete_team(team_service: TeamService, team_id=None):
+    if team_id is None:
+        flash("Id d'équipe invalide.", "error")
+        return redirect(url_for("team_list"))
+    deleted_team_id = team_service.hard_delete(team_id)
+    if deleted_team_id is None:
+        flash(f"Erreur lors de la suppression de l'équipe {team_id}.", "error")
+        return redirect(url_for("team_list"))
+    flash(f"L'équipe a été supprimée correctement.", "success")
+    return redirect(url_for("team_list"))
