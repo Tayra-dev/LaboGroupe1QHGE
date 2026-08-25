@@ -75,7 +75,7 @@ class TicketService(AbstractService):
     def delete(self, entity_id: int):
         pass
 
-    def change_ticket_status(self, ticket_id: int, new_status: str, current_user_id: int):
+    def update_ticket_status(self, ticket_id: int, new_status: str, current_user_id: int):
 
         try: 
             ticket = Ticket.query.get(ticket_id)
@@ -83,6 +83,9 @@ class TicketService(AbstractService):
                 return None
 
             old_status = ticket.status
+
+            if old_status == new_status:
+                return True
 
             ticket.status = new_status
 

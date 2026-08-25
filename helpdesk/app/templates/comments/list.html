@@ -7,13 +7,26 @@
     <h1 class="px-8 py-6 text-4xl">
         Commentaires
     </h1>
+    <!-- Top Navigation / Breadcrumb -->
+        <div class="flex items-center justify-between">
+            <a href="{{ url_for('ticket_detail', ticket_id=ticket_id) }}"
+                class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span> Retour au ticket #{{ ticket_id }} </span>
+            </a>
+
+            <span class="text-sm font-mono text-gray-400">Ticket #{{ ticket_id }}</span>
+        </div>
 
     <div class="mx-auto my-8 w-full">
         <div class="mx-auto w-2/3 xl:w-1/2 px-12 py-8 bg-gray-100 rounded-md shadow-xl">
 
             <div>
                 <h2 class="text-2xl font-semibold">
-                    Commentaires du ticket #{{ ticket_id }}
+                    Commentaires du <a href="{{url_for('ticket_detail', ticket_id=ticket_id) }}" class="text-gray-400 hover:text-gray-300">ticket #{{ ticket_id }}</a>
                 </h2>
 
                 <hr class="mt-2 text-gray-300">
