@@ -112,16 +112,13 @@ def ticket_detail(
     return render_template("tickets/detail.html", ticket=ticket, author=author)
 
 @app.route('/tickets/<ticket_id>/update-status', methods=["POST"])
+@auth_required()
 @inject
 def update_ticket_status(
     ticket_id: int,
     auth_service: AbstractAuthService,
     ticket_service: TicketService
 ):
-
-    if not auth_service.is_authenticated():
-        flash("Vous devez être connecté", "error")
-        return redirect(url_for('login'))
 
     new_status = request.form.get("status")
 
@@ -141,7 +138,7 @@ def update_ticket_status(
     update_status = ticket_service.update_ticket_status(ticket_id, new_status.lower(), current_user.user_id)
 
     if update_status is None:
-        flash("Impossible de changer le status du ticket", "errro")
+        flash("Impossible de changer le status du ticket", "error")
         return redirect(url_for('display_user_tickets'))
 
     flash("Le changement de status a été effectué avec succès", "success")
