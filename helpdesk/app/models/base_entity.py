@@ -29,3 +29,9 @@ class BaseEntity:
         """Désactive l'entité sans l'effacer de la base."""
         self.active = False
         self.deleted_at = func.now()
+
+    def restore(self):
+        """Réactive l'entité."""
+        self.active = True
+        self.deleted_at = None
+        self.updated_at = func.now()

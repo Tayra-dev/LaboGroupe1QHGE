@@ -39,7 +39,7 @@ class TeamService(AbstractService):
 
     def find_one(self, team_id: int) -> TeamDTO:
         try:
-            team = db.dession.get(Team, team_id)
+            team = db.session.get(Team, team_id)
             return TeamMapper.entity_to_dto(team) if team is not None else None
         except SQLAlchemyError as e:
             db.session.rollback()
@@ -79,6 +79,7 @@ class TeamService(AbstractService):
             if team is None:
                 return None
             TeamMapper.form_to_entity(data, team)
+            team.members = self.__user_service.find_entities_by_ids(data.members.data)
             db.session.commit()
         except SQLAlchemyError as e:
             db.session.rollback()
@@ -89,12 +90,29 @@ class TeamService(AbstractService):
         else:
             return TeamMapper.entity_to_dto(team)
 
-    def delete(self, team_id: int) -> int | None:
+    def delete(self, team_id: int) -> TeamDTO | None:
         try:
             team = self.find_one_entity(team_id)
             if team is None:
                 return None
             team.soft_delete()
+            team.members.clear()
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            app.logger.error(
+                f"Erreur lors de la suppression de l'équipe {team_id}: {e}"
+            )
+            return None
+        else:
+            return TeamMapper.entity_to_dto(team)
+
+    def hard_delete(self, team_id: int) -> int | None:
+        try:
+            team = self.find_one_entity(team_id)
+            if team is None:
+                return None
+            db.session.delete(team)
             db.session.commit()
         except SQLAlchemyError as e:
             db.session.rollback()
