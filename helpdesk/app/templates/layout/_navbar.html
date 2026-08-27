@@ -58,7 +58,8 @@
 					class="flex gap-2 items-center p-3 bg-indigo-100 rounded-lg border border-indigo-200 hover:cursor-pointer shadow-xs">
 					<div
 						class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center text-center">
-						<span class="w-full">{{current_user.firstname[0].capitalize() + "" + current_user.lastname[0].capitalize()}}</span>
+						<span class="w-full">{{current_user.firstname[0].capitalize() + "" +
+							current_user.lastname[0].capitalize()}}</span>
 					</div>
 					<div class="flex flex-col">
 						<span class="text-sm font-bold text-indigo-900">{{current_user.firstname}}
@@ -66,9 +67,10 @@
 						<span class="text-xs text-indigo-900">{{current_user.email}}</span>
 					</div>
 				</div>
-				<div id="avatar-dropdown" class="hidden absolute mt-2 p-4 bg-white w-full border border-gray-100 shadow-xl rounded-lg text-center">
-					<button id="logout-btn"
-						class="text-sm font-medium px-4 py-2 bg-red-100 rounded-md border-red-300 text-red-500 w-full hover:cursor-pointer flex items-center gap-1 justify-center">
+				<div id="avatar-dropdown"
+					class="hidden absolute mt-2 p-4 bg-white w-full border border-gray-100 shadow-xl rounded-lg text-center">
+					<button
+						class="logout-btn text-sm font-medium px-4 py-2 bg-red-100 rounded-md border-red-300 text-red-500 w-full hover:cursor-pointer flex items-center gap-1 justify-center">
 						{{ icon(type="logout") }}<span>Logout</span></button>
 				</div>
 			</div>

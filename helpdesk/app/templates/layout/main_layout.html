@@ -18,9 +18,12 @@
 	<title>Helpdesk</title>
 </head>
 
-<body id="main-container" class="min-h-screen flex flex-col">
+<body id="main-container" class="min-h-screen h-screen flex flex-col">
 	{% include "layout/_header.html" %}
-	<div class="grow flex flex-col">
+	<div class="grow flex">
+		{% if current_user %}
+		{% include "layout/_sidebar.html" %}
+		{% endif %}
 		{% block content %}
 		{% endblock %}
 	</div>
