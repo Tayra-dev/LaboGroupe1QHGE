@@ -3,9 +3,11 @@ from flask import flash, redirect, url_for, render_template
 from app.framework.decorators.inject import inject
 from app.services.ticket_status_history_service import TicketStatusHistoryService
 from app.framework.service.abstract_auth_service import AbstractAuthService
+from app.framework.decorators.auth_required import auth_required
 from app.services.user_service import UserService
 
 @app.route('/tickets/<ticket_id>/status-history', methods=['GET'])
+@auth_required()
 @inject
 def get_history_by_ticket(
     ticket_id: int,
@@ -13,9 +15,6 @@ def get_history_by_ticket(
     auth_service: AbstractAuthService,
     user_service: UserService
 ):
-    if not auth_service.is_authenticated():
-        flash("Vous devez être connecté.", "error")
-        return redirect(url_for("login"))
 
     status_histories = ticket_status_history_service.find_all_by(ticket_id=ticket_id)
 
@@ -37,9 +36,3 @@ def get_history_by_ticket(
         authors_map= authors_map
     )
 
-
-
-@app.route('/tickets/status-histories', methods=['GET'])
-@inject
-def get_all_histories():
-    pass
