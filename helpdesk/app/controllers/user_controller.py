@@ -9,19 +9,22 @@ from app.services.user_service import UserService
 from app.framework.service.abstract_auth_service import AbstractAuthService
 from app.dtos.user_dto import UserDTO
 
+
 # Utils -----------------------------------------------------------------------
 def dashboard_route_for(user: UserDTO) -> str:
     if user.is_admin() or user.has_role("TECHNICIEN"):
         return "/dashboard"
     return "/client-dashboard"
 
+
 # Endpoints -------------------------------------------------------------------
+
 
 @app.route("/register", methods=["GET", "POST"])
 @inject
 def register(user_service: UserService, auth_service: AbstractAuthService):
     if current_user := auth_service.get_current_user():
-       return redirect(dashboard_route_for(current_user))
+        return redirect(dashboard_route_for(current_user))
     form = UserRegisterForm()
     if form.validate_on_submit():
         user = user_service.insert(form)
@@ -57,10 +60,12 @@ def logout(auth_service: AbstractAuthService):
     auth_service.logout()
     return redirect("/")
 
+
 @app.route("/dashboard", methods=["GET", "POST"])
 @auth_required(role_name="TECHNICIEN")
 def goToDashboard():
     return render_template("dashboard/dashboard.html")
+
 
 @app.route("/client-dashboard", methods=["GET", "POST"])
 @auth_required()
@@ -70,12 +75,25 @@ def goToClientDashboard():
 
 @app.route("/users/list")
 @auth_required(role_name="ADMIN")
-def list_users():
-    pass
+@inject
+def list_users(user_service: UserService):
+    users = user_service.find_all()
+    return render_template("users/list.html", users=users)
 
 
-@app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
+@app.route("/users/<int:user_id>/edit", methods=["GET", "POST"])
 @auth_required(is_current_user=True)
 @inject
 def edit_profile():
     pass
+
+
+# API -------------------------------------------------------------------------
+
+@app.route("/api/users")
+@auth_required(role_name="ADMIN")
+@inject
+def get_all_users(user_service: UserService):
+    users = user_service.find_all()
+    users_in_json = [user.get_json_parsable() for user in users]
+    return users_in_json

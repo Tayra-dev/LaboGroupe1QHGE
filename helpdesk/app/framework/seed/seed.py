@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 
+from app import db
 from app.framework.seed.seedable import Seedable
 
 
@@ -42,7 +43,11 @@ class Seed:
                 seeder().seed()
                 seeded.append(seeder.__name__)
             except Exception as e:
-                # Un seeder en erreur ne doit pas empêcher les suivants.
+                # Un seeder en erreur ne doit pas empêcher les suivants — mais sans
+                # rollback ici, la session reste "empoisonnée" (transaction avortée)
+                # et TOUS les seeders suivants échouent en cascade avec la même erreur,
+                # masquant le vrai coupable.
+                db.session.rollback()
                 self.__app.logger.error(f"{seeder.__name__}: {e}")
                 failed.append(f"{seeder.__name__} ({e})")
 
