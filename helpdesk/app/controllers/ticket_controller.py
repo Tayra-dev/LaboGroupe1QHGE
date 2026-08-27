@@ -146,3 +146,21 @@ def update_ticket_status(
     return redirect(url_for('display_user_tickets'))
 
 
+
+#update and delete ticket services
+@app.route("/tickets/<int:ticket_id>", methods=["POST","GET"])
+# ! For Direct Url API Testing (PostMan)
+# @csrf.exempt
+@auth_required("TECHNICIEN")
+@inject
+def update_ticket(
+    ticket_service: TicketService,
+    ticket_id: int
+):
+    ticket = ticket_service.find_one(ticket_id)
+
+    if ticket is None:
+        flash("Ticket not found", "warning")
+        return redirect(url_for("display_all_tickets"))
+
+    return render_template("tickets/update.html", ticket=ticket)
