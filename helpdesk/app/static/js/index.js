@@ -1,4 +1,6 @@
 import * as Modal from "./modal.js";
+import * as Logout from "./logout.js";
+import * as Sidebar from "./sidebar.js"
 
 const handleShowHidePassword = () => {
     const eyeIcons = document.querySelectorAll(".eye-icon");
@@ -10,23 +12,6 @@ const handleShowHidePassword = () => {
             field.type = field.type === "password" ? "text" : "password";
             slash.classList.toggle("hidden");
         });
-    });
-};
-
-const handleToggleAvatarDropdown = () => {
-    const userAvatar = document.getElementById("user-avatar");
-    if (!userAvatar) return;
-    userAvatar.addEventListener("click", () => {
-        const avatarDropdown = document.getElementById("avatar-dropdown");
-        avatarDropdown.classList.toggle("hidden");
-    });
-};
-
-const handleLogout = () => {
-    const logoutBtn = document.getElementById("logout-btn");
-    if (!logoutBtn) return;
-    logoutBtn.addEventListener("click", () => {
-        window.location.replace("/logout");
     });
 };
 
@@ -66,9 +51,10 @@ const handleTableMasterCheckboxes = () => {
 // Init JS
 // TODO: Wrap all this shit in a an init wrapper
 handleShowHidePassword();
-handleToggleAvatarDropdown();
-handleLogout();
+Logout.handleToggleAvatarDropdown();
+Logout.handleLogout();
 handleDismissNotification();
 handleTableMasterCheckboxes();
 Modal.handleOpenModal();
 Modal.handleCloseModal();
+Sidebar.handleSidebarCollapse();
