@@ -24,8 +24,6 @@ from flask import request
 from app.models.equipment import Equipment
 
 @app.route("/tickets/create", methods=["GET", "POST"])
-# ! For Direct Url API Testing (PostMan)
-# @csrf.exempt
 @auth_required()
 @inject
 def create_ticket(
@@ -33,8 +31,6 @@ def create_ticket(
     priority_service: PriorityService,
     ticket_service: TicketService
 ):
-    # ! For Direct Url API Testing (PostMan)
-    # form = TicketForm(meta={"csrf": False})
     form = TicketForm()
 
     # Note for later:
@@ -55,13 +51,9 @@ def create_ticket(
     if form.validate_on_submit():
         ticket_service.insert(form)
         return "SUCCESS", 201
-    # ! For Direct Url API Testing (PostMan)
-    # return f"VALIDATION ERROR: {form.errors}", 400 
     return render_template("tickets/create.html", form=form)
 
 @app.route("/tickets", methods=["POST","GET"])
-# ! For Direct Url API Testing (PostMan)
-# @csrf.exempt
 @auth_required("TECHNICIEN")
 @inject
 def display_all_tickets(
@@ -91,8 +83,6 @@ def display_user_tickets(
 
 # Detail view for one speficic ticket
 @app.route("/tickets/<int:ticket_id>", methods=["GET", "POST"])
-# ! For Direct Url API Testing (PostMan)
-# @csrf.exempt
 @auth_required() #should be owner of the ticket or any technician ?
 @inject
 def ticket_detail(
@@ -149,8 +139,6 @@ def update_ticket_status(
 
 #update and delete ticket services
 @app.route("/tickets/<int:ticket_id>", methods=["POST","GET"])
-# ! For Direct Url API Testing (PostMan)
-# @csrf.exempt
 @auth_required("TECHNICIEN")
 @inject
 def update_ticket(
