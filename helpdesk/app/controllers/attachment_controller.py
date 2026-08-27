@@ -1,12 +1,14 @@
 from app import app
-from flask import flash, redirect, url_for, render_template
+from flask import flash, redirect, url_for, render_template, send_file
 from app.framework.decorators.inject import inject
+from app.framework.decorators.auth_required import auth_required
 from app.services.attachment_service import AttachmentService
 from app.forms.attachment_form import AttachmentForm
 from app.framework.service.abstract_auth_service import AbstractAuthService
 
 
 @app.route('/tickets/<ticket_id>/attachments/create', methods=['GET', 'POST'])
+@auth_required()
 @inject
 def attachment_create(
     attachment_service: AttachmentService,
@@ -14,10 +16,6 @@ def attachment_create(
     ticket_id: int
 ):
     """Création d'une pièce jointe sur un ticket"""
-
-    if not auth_service.is_authenticated():
-        flash("Vous devez être connecté.", "error")
-        return redirect(url_for("login"))
 
     form = AttachmentForm()
 
@@ -39,12 +37,13 @@ def attachment_create(
             return redirect(url_for("attachment_list", ticket_id=ticket_id))
 
     return render_template(
-        "attachments/create.html",
+        "attachments/list.html",
         form= form,
         ticket_id= ticket_id
     )
 
 @app.route('/tickets/<ticket_id>/attachments', methods=['GET'])
+@auth_required()
 @inject
 def attachment_list(
     ticket_id: int,
@@ -52,10 +51,6 @@ def attachment_list(
     auth_service: AbstractAuthService
 ):
     """Liste toutes les pièces jointes d'un ticket"""
-
-    if not auth_service.is_authenticated():
-        flash("Vous devez être connecté.", "error")
-        return redirect(url_for("login"))
     
     form = AttachmentForm()
 
@@ -74,6 +69,7 @@ def attachment_list(
     )
 
 @app.route('/tickets/<ticket_id>/attachments/<attachment_id>/delete', methods=['POST'])
+@auth_required(is_current_user=True)
 @inject
 def attachment_delete(
     ticket_id: int,
@@ -88,11 +84,6 @@ def attachment_delete(
         app.logger.error(f"Error | attachment find one impossible")
         flash(f"Impossible de trouver la pièce jointe {attachment_id}", "error")
         return redirect(url_for('attachment_list', ticket_id=ticket_id))
-   
-    """Vérification de login"""
-    if not auth_service.is_authenticated():
-        flash("Vous devez être connecté !", "error")
-        return redirect(url_for("login"))
 
     """Vérification des roles"""
 
@@ -118,5 +109,29 @@ def attachment_delete(
 
     return redirect(url_for('attachment_list', ticket_id=ticket_id))
 
-#route de téléchargement ?
+
+@app.route('/tickets/<ticket_id>/attachments/<attachment_id>/download', methods=["GET"])
+@auth_required()
+@inject
+def attachment_download(
+    ticket_id: int,
+    attachment_id: int,
+    attachment_service: AttachmentService
+):
+
+    file_data = attachment_service.download(attachment_id)
+
+    if file_data is None:
+        app.logger.error(f"Error | attachment download impossible")
+        flash(f"Impossible de télécharger la pièce jointe {attachment_id}", "error")
+        return redirect(url_for('attachment_list', ticket_id=ticket_id))
+
+
+    return send_file(
+        path_or_file=file_data["path"],
+        as_attachment=True,
+        download_name=file_data["filname"]
+    )
+
+     
 

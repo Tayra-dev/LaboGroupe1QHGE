@@ -113,7 +113,7 @@ class AttachmentService(AbstractService):
 
         if not file_data:
             return False, "Aucun fichier"
-        if not file_data.filname:
+        if not file_data.filename:
             return False, "Aucun nom de fichier"
 
         filename = secure_filename(file_data.filename)
@@ -126,7 +126,7 @@ class AttachmentService(AbstractService):
         if extension not in self.ALLOWED_EXTENSIONS:
             return False, "Type de fichier non autorisé"
 
-        if file_data.mimtype not in self.ALLOWED_MIME_TYPES:
+        if file_data.mimetype not in self.ALLOWED_MIME_TYPES:
             return False, "Type MIME non autorisé"
 
         file_data.stream.seek(0, os.SEEK_END)
@@ -138,7 +138,7 @@ class AttachmentService(AbstractService):
         if file_size == 0:
             return False, "Le fichier est vide"
 
-        return True
+        return True, None
 
     def insert(self, data):
         """Crée une pièce jointe à partir d'un formulaire validé."""
@@ -228,7 +228,7 @@ class AttachmentService(AbstractService):
         et que le fichier existe réellement dans uploads
         """
 
-        attachement = db.session.get(Attachment, entity_id):
+        attachement = db.session.get(Attachment, entity_id)
 
         if attachement is None:
             return None
@@ -256,6 +256,27 @@ class AttachmentService(AbstractService):
             return None
 
         return file_path
+
+    def download(self, entity_id: int):
+        """téléchargement physique d'une pièce jointe"""
+        try:
+            file_path = self.get_file_path(entity_id)
+
+            if file_path is None:
+                return None
+
+            attachment = db.session.get(Attachment, entity_id)
+
+            return {
+                "path": file_path,
+                "filname": attachment.attachment_filename
+            }
+        
+        except Exception as e:
+            app.logger.error(f"Error | download attachement: {e}")
+            return None 
+            
+
         
     def update(self, entity_id: int, data):
         """Met à jour une pièce jointe existante."""
