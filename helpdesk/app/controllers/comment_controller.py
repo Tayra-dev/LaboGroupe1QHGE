@@ -6,8 +6,10 @@ from app.framework.service.abstract_auth_service import AbstractAuthService
 from app.forms.comment_form import CommentForm
 from app.framework.decorators.inject import inject
 from app.services.user_service import UserService
+from app.framework.decorators.auth_required import auth_required
 
 @app.route('/tickets/<ticket_id>/comments/create', methods=['GET', 'POST'])
+@auth_required()
 @inject
 def comment_create(
     ticket_id: int,
@@ -17,10 +19,6 @@ def comment_create(
     """Création d'un commentaire sur un ticket"""
 
     current_user = auth_service.get_current_user()
-
-    if current_user is None:
-        flash("Vous devez être connecté.", "error")
-        return redirect(url_for("login"))
     
     form = CommentForm()
 
@@ -52,6 +50,7 @@ def comment_create(
     )
 
 @app.route('/tickets/<ticket_id>/comments', methods=['GET'])
+@auth_required()
 @inject
 def comment_list(
     ticket_id: int,
@@ -84,6 +83,7 @@ def comment_list(
 
 
 @app.route('/tickets/<ticket_id>/comments/<comment_id>/edit', methods=['GET', 'POST'])
+@auth_required()
 @inject
 def comment_edit(
     ticket_id: int,
@@ -104,10 +104,6 @@ def comment_edit(
         ))
 
     current_user = auth_service.get_current_user()
-
-    if current_user is None:
-        flash("Vous devez être connecté.", "error")
-        return redirect(url_for("login"))
 
     if current_user.user_id != comment.author_id:
         flash("Vous n'êtes pas autorisé à modifier ce commentaire", "warning")
@@ -150,6 +146,7 @@ def comment_edit(
  
 
 @app.route('/tickets/<ticket_id>/comments/<comment_id>/delete', methods=['POST'])
+@auth_required()
 @inject
 def comment_delete(
     ticket_id: int,
@@ -170,10 +167,6 @@ def comment_delete(
         ))
 
     current_user = auth_service.get_current_user()
-
-    if current_user is None:
-        flash("Vous devez être connecté.", "error")
-        return redirect(url_for("login"))
 
     is_author = current_user.user_id == comment.author_id
     is_admin = "admin" in current_user.roles
