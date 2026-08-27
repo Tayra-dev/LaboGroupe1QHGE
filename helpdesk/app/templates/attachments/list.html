@@ -32,20 +32,21 @@
                            <!-- Conteneur principal parfaitement aligné verticalement -->
                            <div class="flex flex-row items-center gap-4">
                                
-                               <!-- Ajout de 'truncate' et max-w pour éviter que les longs noms n'écrasent les boutons -->
                                <p class="text-gray-700 font-medium truncate max-w-[200px] sm:max-w-xs" title="{{ attachment.attachment_filename }}">
                                    {{ attachment.attachment_filename }}
                                </p>
                                
-                               <!-- Suppression de px-4 inutile car géré par gap-4 -->
+                            
                                <p class="text-gray-400 text-sm whitespace-nowrap">
                                    Taille: {{ ((attachment.attachment_size | int) / (1024*1024) ) | round(2) }} Mo
                                </p>
                                
-                               <!-- ml-auto pousse tout ce bloc vers l'extrême droite -->
                                <div class="ml-auto flex flex-row items-center gap-4">
+                                    <a href="{{ url_for('attachment_download', ticket_id=ticket_id, attachment_id=attachment.attachment_id)}}" 
+                                    class="text-green-500 hover:text-red-700 text-sm font-medium focus:outline-none">Télécharger</a>
                                     
-                                    <!-- Formulaire de suppression (Correction des syntaxes HTML cassées) -->           
+                                    <span>|</span>
+                                    
                                     <form action="{{ url_for('attachment_delete', ticket_id=ticket_id, attachment_id=attachment.attachment_id) }}" 
                                           method="POST" 
                                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette pièce jointe ?');"
