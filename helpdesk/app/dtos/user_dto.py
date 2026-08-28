@@ -43,9 +43,6 @@ class UserDTO(AbstractDTO):
     def has_role(self, rolename: str) -> bool:
         return rolename in self.role_names()
 
-    def is_active(self):
-        pass
-
     # --- Utils ---------------------------------------------------------------
 
     def role_names(self) -> list[str]:
