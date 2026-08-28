@@ -18,6 +18,7 @@ from app.services.ticket_service import TicketService
 from app.services.category_service import CategoryService
 from app.services.priority_service import PriorityService
 from flask import request
+from app.models.ticket_status import TicketStatusEnum
 
 
 # Temporary import
@@ -112,20 +113,13 @@ def update_ticket_status(
 
     new_status = request.form.get("status")
 
-    allowed_status = [
-        "Open",
-        "In Progress",
-        "Resolved",
-        "Closed"
-        ]
-
-    if new_status not in allowed_status:
+    if new_status not in TicketStatusEnum.values():
         flash("Status de ticket invalide", "warning")
         return redirect(url_for('display_user_tickets'))
 
     current_user = auth_service.get_current_user()
 
-    update_status = ticket_service.update_ticket_status(ticket_id, new_status.lower(), current_user.user_id)
+    update_status = ticket_service.update_ticket_status(ticket_id, TicketStatusEnum[new_status].value, current_user.user_id)
 
     if update_status is None:
         flash("Impossible de changer le status du ticket", "error")

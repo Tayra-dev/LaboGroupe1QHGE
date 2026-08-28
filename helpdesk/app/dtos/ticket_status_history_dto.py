@@ -31,8 +31,8 @@ class TicketStatusHistoryDTO(AbstractDTO):
             "history_id": self.history_id,
             "ticket_id": self.ticket_id,
             "user_id": self.user_id,
-            "old_status": self.old_status,
-            "new_status": self.new_status,
+            "old_status": self.old_status.value if self.old_status else None,
+            "new_status": self.new_status.value if self.new_status else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None
             }

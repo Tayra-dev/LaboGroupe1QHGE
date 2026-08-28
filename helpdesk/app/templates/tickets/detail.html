@@ -40,14 +40,14 @@
                 <div class="flex flex-wrap items-center gap-2">
                     <!-- Status Badge -->
                     {% set status_color = 'bg-blue-50 text-blue-700 border-blue-200' %}
-                    {% if ticket.ticket_status|lower in ['in progress', 'en cours'] %}
+                    {% if ticket.ticket_status.value == 'IN_PROGRESS' %}
                     {% set status_color = 'bg-amber-50 text-amber-700 border-amber-200' %}
-                    {% elif ticket.ticket_status|lower in ['resolved', 'closed', 'résolu'] %}
+                    {% elif ticket.ticket_status.value == 'RESOLVED' or ticket.ticket_status.value == 'CLOSED' %}
                     {% set status_color = 'bg-emerald-50 text-emerald-700 border-emerald-200' %}
                     {% endif %}
                     <span
                         class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold border {{ status_color }}">
-                        {{ ticket.ticket_status }}
+                        {{ ticket.ticket_status.value }}
                     </span>
 
                     <!-- Category Badge -->

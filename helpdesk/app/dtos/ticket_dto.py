@@ -72,6 +72,9 @@ class TicketDTO(AbstractDTO):
         if self.ticket_priority:
             data['ticket_priority'] = self.ticket_priority.get_json_parsable()
 
+        if self.ticket_status and hasattr(self.ticket_status, 'value'):
+            data['ticket_status'] = self.ticket_status.value
+
         data['ticket_comments'] = [comment.get_json_parsable() for comment in self.ticket_comments]
         data['ticket_attachments'] = [attachment.get_json_parsable() for attachment in self.ticket_attachments]
         data['ticket_status_histories'] = [sh.get_json_parsable() for sh in self.ticket_status_histories]

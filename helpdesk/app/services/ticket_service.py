@@ -1,3 +1,4 @@
+from app.models.ticket_status import TicketStatusEnum
 from app.framework.decorators.injectable import injectable
 from flask import flash, redirect, url_for
 from app.models.priority import Priority
@@ -30,7 +31,7 @@ class TicketService(AbstractService):
             ticket.author_id = current_user.user_id
             
             # Set status to "New" by default
-            ticket.status = "New"
+            ticket.status = TicketStatusEnum.NEW
 
             # Compute due date (now + (priority delay in hours))
             delay = Priority.query.get(ticket.priority_id).delay_hours
@@ -67,7 +68,10 @@ class TicketService(AbstractService):
         pass
 
     def find_one_entity(self, entity_id: int):
-        pass
+        ticket = Ticket.query.get(entity_id)
+        if ticket is None:
+            return None
+        return ticket
 
     def update(self, entity_id: int, data):
         pass
@@ -78,15 +82,18 @@ class TicketService(AbstractService):
     def update_ticket_status(self, ticket_id: int, new_status: str, current_user_id: int):
 
         try: 
-            ticket = Ticket.query.get(ticket_id)
+            ticket = self.find_one_entity(ticket_id)
             if not ticket:
                 return None
 
             old_status = ticket.status
 
-            if old_status == new_status:
+            if old_status.value == new_status:
                 return True
 
+            if new_status not in TicketStatusEnum.values():
+                return None
+                
             ticket.status = new_status
 
             history_data = {
