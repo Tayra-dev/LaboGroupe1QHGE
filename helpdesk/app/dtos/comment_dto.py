@@ -4,12 +4,11 @@ from app.models.comment import Comment
 class CommentDTO(AbstractDTO):
 
     def __init__(self):
+        super().__init__()
         self.comment_id = None
         self.comment_content = None
         self.author_id = None
         self.ticket_id = None
-        self.created_at = None
-        self.updated_at = None
 
     @staticmethod
     def build_from_entity(entity) -> "CommentDTO":

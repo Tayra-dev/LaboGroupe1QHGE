@@ -5,6 +5,7 @@ from app.models.user import User
 
 class UserDTO(AbstractDTO):
     def __init__(self):
+        super().__init__()
         self.user_id = None
         self.name = None
         self.email = None
@@ -25,6 +26,10 @@ class UserDTO(AbstractDTO):
         user_dto.team_id = user.team_id
         user_dto.site_id = user.site_id
         user_dto.roles = [RoleDTO.build_from_entity(ur.rel_role) for ur in user.roles]
+        user_dto.active = user.active
+        user_dto.created_at = user.created_at
+        user_dto.updated_at = user.updated_at
+        user_dto.deleted_at = user.deleted_at
         return user_dto
 
     def get_json_parsable(self):

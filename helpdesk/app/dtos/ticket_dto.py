@@ -10,6 +10,7 @@ from app.dtos.ticket_status_history_dto import TicketStatusHistoryDTO
 class TicketDTO(AbstractDTO):
     
     def __init__(self):
+        super().__init__()
         self.ticket_id = None
         self.ticket_title = None
         self.ticket_description = None

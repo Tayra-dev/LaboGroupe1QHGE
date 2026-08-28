@@ -7,6 +7,7 @@ from models.equipment import Equipment
 class EquipmentDTO(AbstractDTO):
 
     def __init__(self) -> None:
+        super().__init__()
         self.equipment_id = None
         self.name = None
         self.type = None

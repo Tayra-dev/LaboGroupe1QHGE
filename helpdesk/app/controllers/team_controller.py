@@ -59,7 +59,9 @@ def create_team(team_service: TeamService, user_service: UserService, team_id=No
         else:
             team = team_service.update(team_id, form)
             if team is not None:
-                flash(f"L'équipe {team.name} a été mse à jour correctement.", "success")
+                flash(
+                    f"L'équipe {team.name} a été mise à jour correctement.", "success"
+                )
                 return redirect(url_for("team_list"))
     return render_template(
         "teams/add_or_update.html",
@@ -80,5 +82,5 @@ def delete_team(team_service: TeamService, team_id=None):
     if deleted_team_id is None:
         flash(f"Erreur lors de la suppression de l'équipe {team_id}.", "error")
         return redirect(url_for("team_list"))
-    flash(f"L'équipe a été supprimée correctement.", "success")
+    flash("L'équipe a été supprimée correctement.", "success")
     return redirect(url_for("team_list"))

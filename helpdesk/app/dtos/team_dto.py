@@ -5,6 +5,7 @@ from app.models.team import Team
 
 class TeamDTO(AbstractDTO):
     def __init__(self):
+        super().__init__()
         self.team_id = None
         self.name = None
         self.description = None
