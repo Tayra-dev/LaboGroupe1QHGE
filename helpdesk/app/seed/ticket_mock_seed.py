@@ -33,13 +33,6 @@ STATUS_WEIGHTS = {
     TicketStatusEnum.CLOSED: 12,
 }
 
-# Charge inégale entre techniciens, pour que la carte "par technicien" ait un intérêt.
-TECHNICIAN_WEIGHTS = {
-    "technicien_1": 5,
-    "technicien_2": 3,
-    "technicien_3": 2,
-}
-
 TICKET_COUNT = 30
 DAYS_SPREAD = 60
 
@@ -56,24 +49,30 @@ class TicketMockSeed(Seedable):
         priorities = Priority.query.all()
         equipments = Equipment.query.all()
         clients = [u for u in User.query.all() if u.has_role("CLIENT")]
-        technicians = {u.name: u for u in User.query.all() if u.has_role("TECHNICIEN")}
+        # Triés par id (pas par nom) : la répartition de charge ne doit dépendre
+        # que de COMBIEN de techniciens existent, jamais de noms codés en dur —
+        # ceux-ci viennent de UserSeed (ou de n'importe quel autre seed d'équipe),
+        # jamais garantis identiques d'un poste à l'autre.
+        technicians = sorted(
+            (u for u in User.query.all() if u.has_role("TECHNICIEN")),
+            key=lambda u: u.user_id,
+        )
 
         if not (categories and priorities and equipments and clients and technicians):
             app.logger.warning(
                 "Seed tickets: données de référence manquantes "
-                "(catégories/priorités/équipements/users) — seed reporté"
+                "(catégories/priorités/équipements/clients/techniciens) — seed reporté"
             )
             return
 
         statuses = list(STATUS_WEIGHTS.keys())
         status_weights = list(STATUS_WEIGHTS.values())
 
-        technician_names = [name for name in TECHNICIAN_WEIGHTS if name in technicians]
-        technician_weight_values = [TECHNICIAN_WEIGHTS[name] for name in technician_names]
-
-        if not technician_names:
-            app.logger.warning("Seed tickets: aucun des techniciens attendus n'existe en base")
-            return
+        # Poids décroissants selon la position : charge volontairement inégale entre
+        # techniciens, quel que soit leur nombre réel en base (1, 3, ou 10).
+        technician_weight_values = [
+            max(1, len(technicians) - i) for i in range(len(technicians))
+        ]
 
         # Graine fixe : mêmes données générées à chaque reseed, reproductible pour toute l'équipe.
         rng = random.Random(42)
@@ -88,10 +87,9 @@ class TicketMockSeed(Seedable):
 
             technician = None
             if status != TicketStatusEnum.NEW:
-                tech_name = rng.choices(
-                    technician_names, weights=technician_weight_values, k=1
+                technician = rng.choices(
+                    technicians, weights=technician_weight_values, k=1
                 )[0]
-                technician = technicians[tech_name]
 
             created_at = now - timedelta(
                 days=rng.randint(0, DAYS_SPREAD), hours=rng.randint(0, 23)
