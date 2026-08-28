@@ -54,12 +54,6 @@ def upgrade():
             postgresql_using='newstatus::ticketstatusenum',
             existing_nullable=False,
         )
-        # Corrige le typo historique : la colonne s'appelait "ticketid " (espace finale),
-        # ne correspondant plus au modèle Python. Vrai RENAME, pas add+drop, pour ne
-        # jamais perdre de données si cette migration est un jour rejouée sur une table non vide.
-        batch_op.drop_constraint(batch_op.f('ticketstatushistories_ticketid _fkey'), type_='foreignkey')
-        batch_op.alter_column('ticketid ', new_column_name='ticketid')
-        batch_op.create_foreign_key(None, 'tickets', ['ticketid'], ['ticketid'])
 
     # ### end Alembic commands ###
 

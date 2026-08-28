@@ -16,3 +16,7 @@ class TicketStatusEnum(enum.Enum):
             TicketStatusEnum.RESOLVED: "Résolu",
             TicketStatusEnum.CLOSED: "Clos",
         }[self]
+    
+    @classmethod
+    def values(cls):
+        return [status.value for status in cls]
