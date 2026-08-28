@@ -7,6 +7,7 @@ from app.models.satisfaction_survey import SatisfactionSurvey
 class SatisfactionSurveyDTO(AbstractDTO):
 
     def __init__(self) -> None:
+        super().__init__()
         self.survey_id = None
         self.rating = None
         self.comment = None

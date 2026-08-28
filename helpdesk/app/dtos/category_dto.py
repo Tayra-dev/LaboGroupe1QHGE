@@ -5,6 +5,7 @@ from app.models.category import Category
 class CategoryDTO(AbstractDTO):
 
     def __init__(self):
+        super().__init__()
         self.category_id = None
         self.category_name = None
         self.category_description = None

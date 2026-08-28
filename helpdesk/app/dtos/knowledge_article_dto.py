@@ -6,6 +6,7 @@ from app.models.knowledge_article import KnowledgeArticle
 class KnowledgeArticleDTO(AbstractDTO):
 
     def __init__(self) -> None:
+        super().__init__()
         self.article_id = None
         self.title = None
         self.content = None

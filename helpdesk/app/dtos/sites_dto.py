@@ -7,6 +7,7 @@ from app.models.site import Site
 class SiteDTO(AbstractDTO):
 
     def __init__(self):
+        super().__init__()
         self.site_id = None
         self.name = None
         self.address = None

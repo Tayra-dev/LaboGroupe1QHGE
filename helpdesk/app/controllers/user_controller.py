@@ -1,4 +1,4 @@
-from flask import redirect, render_template, request
+from flask import redirect, render_template, request, flash, url_for
 
 from app import app
 from app.framework.decorators.inject import inject
@@ -77,8 +77,21 @@ def goToClientDashboard():
 @auth_required(role_name="ADMIN")
 @inject
 def list_users(user_service: UserService):
-    users = user_service.find_all()
+    users = user_service.find_all(active=False)
     return render_template("users/list.html", users=users)
+
+
+@app.route("/users/add", methods=["GET", "POST"])
+@auth_required(role_name="ADMIN")
+@inject
+def create_user(user_service: UserService):
+    form = UserRegisterForm()
+    if form.validate_on_submit():
+        user = user_service.insert(form)
+        if user is not None:
+            flash(f"L'utilisateur {user.name} a été créé correctement.", "success")
+            return redirect(url_for("list_users"))
+    return render_template("users/add_user.html", form=form)
 
 
 @app.route("/users/<int:user_id>/edit", methods=["GET", "POST"])
@@ -88,12 +101,6 @@ def edit_profile():
     pass
 
 
-# API -------------------------------------------------------------------------
 
-@app.route("/api/users")
-@auth_required(role_name="ADMIN")
-@inject
-def get_all_users(user_service: UserService):
-    users = user_service.find_all()
-    users_in_json = [user.get_json_parsable() for user in users]
-    return users_in_json
+
+

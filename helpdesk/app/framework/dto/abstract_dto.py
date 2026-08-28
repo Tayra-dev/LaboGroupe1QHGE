@@ -21,6 +21,12 @@ class AbstractDTO(ABC):
     - get_json_parsable(): version 100% types de base, prête pour jsonify()
     """
 
+    def __init__(self):
+       self.active = None
+       self.created_at = None
+       self.updated_at = None
+       self.deleted_at = None
+
     @staticmethod
     @abstractmethod
     def build_from_entity(entity):

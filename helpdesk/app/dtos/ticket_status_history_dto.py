@@ -3,13 +3,12 @@ from app.models.ticket_status_history import TicketStatusHistory
 
 class TicketStatusHistoryDTO(AbstractDTO):
     def __init__(self):
+        super().__init__()
         self.history_id = None
         self.ticket_id = None
         self.user_id = None
         self.old_status = None
         self.new_status = None
-        self.created_at = None
-        self.updated_at = None
 
     @staticmethod
     def build_from_entity(entity):

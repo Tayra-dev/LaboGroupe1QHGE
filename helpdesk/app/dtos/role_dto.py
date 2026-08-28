@@ -4,6 +4,7 @@ from app.models.role import Role
 
 class RoleDTO(AbstractDTO):
     def __init__(self):
+        super().__init__()
         self.role_id = None
         self.name = None
 

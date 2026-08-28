@@ -5,14 +5,13 @@ from app.models.attachment import Attachment
 class AttachmentDTO(AbstractDTO):
 
     def __init__(self):
+        super().__init__()
         self.attachment_id = None
         self.attachment_filename = None
         self.attachment_path = None
         self.attachment_size = None
         self.ticket_id = None
         self.author_id = None
-        self.created_at = None
-        self.updated_at = None
 
     @staticmethod
     def build_from_entity(entity) -> "AttachmentDTO":

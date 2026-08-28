@@ -18,9 +18,12 @@ class UserService(AbstractService):
     def __init__(self):
         self.__hasher = PasswordHasher()
 
-    def find_all(self) -> list[UserDTO]:
+    def find_all(self, active=True) -> list[UserDTO]:
         try:
-            users = User.query.filter_by(active=True).order_by(User.user_id).all()
+            if not active:
+                users = User.query.order_by(User.user_id).all()
+            else:
+                users = User.query.filter_by(active).order_by(User.user_id).all()
         except SQLAlchemyError as e:
             db.session.rollback()
             app.logger.error(

@@ -5,6 +5,7 @@ from app.framework.dto import AbstractDTO
 class PriorityDTO(AbstractDTO):
     
     def __init__(self):
+        super().__init__()
         self.priority_id = None
         self.priority_name = None
         self.priority_level = None
