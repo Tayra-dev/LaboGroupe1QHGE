@@ -97,10 +97,9 @@ def create_user(user_service: UserService):
 @app.route("/users/<int:user_id>/edit", methods=["GET", "POST"])
 @auth_required(is_current_user=True)
 @inject
-def edit_profile():
-    pass
-
-
-
-
-
+def edit_profile(user_service: UserService, user_id=None):
+    if user_id is not None:
+        app.logger.debug(f"user id = {user_id}")
+    else:
+        app.logger.debug("No user id provided")
+    return render_template("users/update_user.html")
